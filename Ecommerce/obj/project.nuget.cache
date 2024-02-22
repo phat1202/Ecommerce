@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "+C5D/Qap0Snb8I/sEH3QMutfS8V0Y0Ws6cUyezcJUbsXwo7zGRDjb4eE+jj1OfC3N4ACtP9nmCP5aZx4kw9YKg==",
+  "dgSpecHash": "vB+na2jTqPk37T3fydTebfDXcZXOxZc0MUaWTIS9TnLF24QYW0hLvcKxfgULrmAir2J4lV13vgviKyHzh4HZBQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Ecommerce.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\trgta\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\trgta\\.nuget\\packages\\bouncycastle.cryptography\\2.2.1\\bouncycastle.cryptography.2.2.1.nupkg.sha512",
     "C:\\Users\\trgta\\.nuget\\packages\\google.protobuf\\3.25.1\\google.protobuf.3.25.1.nupkg.sha512",
     "C:\\Users\\trgta\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

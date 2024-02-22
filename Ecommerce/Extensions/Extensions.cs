@@ -4,5 +4,6 @@ namespace Ecommerce.Extensions
 {
     public static class Extensions
     {
+
     }
 }
