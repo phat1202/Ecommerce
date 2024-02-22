@@ -14,6 +14,7 @@ namespace Ecommerce.Models
         [Required]
         public string? Email {  get; set; }
         [Required(ErrorMessage = "Không được để trống")]
+        [DataType(DataType.Password)]
         [MaxLength(255, ErrorMessage = "Không được vượt quá 255 ký tự")]
         public string? Password { get; set; }
         [Required(ErrorMessage = "Không được để trống")]
@@ -23,8 +24,8 @@ namespace Ecommerce.Models
         [Required(ErrorMessage = "Không được để trống")]
         [MaxLength(20)]
         public string? Phone { get; set; }
-        public int Gender { get; set; }
-        public int Role { get; set; }
+        public int? Gender { get; set; }
+        public int? Role { get; set; }
         public Guid ResetPasswordGuid { get; set; }
         public string? CartId { get; set; }
     }
