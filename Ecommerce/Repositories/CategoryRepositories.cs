@@ -38,5 +38,9 @@ namespace Ecommerce.Repositories
             var data = _mapper.Map<Category>(category);
             _context.Set<Category>().Remove(data);
         }
+        public async Task<int> CommitAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
     }
 }

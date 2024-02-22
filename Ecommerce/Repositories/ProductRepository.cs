@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Models;
 using Ecommerce.ViewModel.Product;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Ecommerce.Repositories
 {
@@ -37,6 +38,10 @@ namespace Ecommerce.Repositories
         {
             var data = _mapper.Map<Product>(product);
             _context.Set<Product>().Remove(data);
+        }
+        public async Task<int> CommitAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
     }
 }
