@@ -126,3 +126,4 @@ C:\Users\trgta\OneDrive\Desktop\C#\PP\Ecommerce\Ecommerce\bin\Debug\net8.0\runti
 C:\Users\trgta\OneDrive\Desktop\C#\PP\Ecommerce\Ecommerce\bin\Debug\net8.0\MySql.EntityFrameworkCore.dll
 C:\Users\trgta\OneDrive\Desktop\C#\PP\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.sourcelink.json
 C:\Users\trgta\OneDrive\Desktop\C#\PP\Ecommerce\Ecommerce\obj\Debug\net8.0\scopedcss\Views\Shared\_LayoutIndex.cshtml.rz.scp.css
+C:\Users\trgta\OneDrive\Desktop\C#\PP\Ecommerce\Ecommerce\bin\Debug\net8.0\AutoMapper.dll
