@@ -55,6 +55,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.25.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
@@ -62,11 +64,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1" />
+
     <PackageReference Include="MySql.Data" Version="8.3.0" />
 
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
 
     <PackageReference Include="MySqlConnector" Version="2.3.5" />
+
+    <PackageReference Include="SendGrid" Version="9.29.2" />
   </ItemGroup>
 
 </Project>

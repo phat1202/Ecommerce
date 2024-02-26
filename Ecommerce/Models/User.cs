@@ -25,6 +25,7 @@ namespace Ecommerce.Models
         [MaxLength(20)]
         public string? Phone { get; set; }
         public int? Gender { get; set; }
+        public string? Avatar { get; set; }
         public int? Role { get; set; }
         public Guid ResetPasswordGuid { get; set; }
         public string? CartId { get; set; }

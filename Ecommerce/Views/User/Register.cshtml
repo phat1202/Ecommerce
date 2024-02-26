@@ -23,31 +23,37 @@
                             <div class="row gy-3 overflow-hidden">
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <input asp-for="Name" class="form-control border-0 border-bottom rounded-0" name="email" id="email" placeholder="name@example.com" required>
+                                        <input asp-for="Name" class="form-control border-0 border-bottom rounded-0"  placeholder="name@example.com" required>
                                         <label asp-for="Name" class="form-label">Name</label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <input asp-for="Email" class="form-control border-0 border-bottom rounded-0" name="email" id="email" placeholder="name@example.com" required>
+                                        <input asp-for="Email" class="form-control border-0 border-bottom rounded-0"  placeholder="name@example.com" required>
                                         <label asp-for="Email" class="form-label">Email</label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <input asp-for="Password" type="password" class="form-control border-0 border-bottom rounded-0" name="password" id="password" value="" placeholder="Password" required>
+                                        <input asp-for="Password" type="password" class="form-control border-0 border-bottom rounded-0"  value="" placeholder="Password" required>
                                         <label asp-for="Password" class="form-label">Password</label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <input asp-for="ConfirmPassword" type="password" class="form-control border-0 border-bottom rounded-0" name="password" id="password" value="" placeholder="Password" required>
-                                        <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                                        <input asp-for="Phone" class="form-control border-0 border-bottom rounded-0" placeholder="012345678" required>
+                                        <label asp-for="Phone" class="form-label">Số điện thoại</label>
                                     </div>
                                 </div>
+@*                                 <div class="col-12">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="ConfirmPassword" type="password" class="form-control border-0 border-bottom rounded-0"  value="" placeholder="Password" required>
+                                        <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                                    </div>
+                                </div> *@
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control border-0 border-bottom rounded-0" name="email" id="email" placeholder="name@example.com" required>
+                                        <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control border-0 border-bottom rounded-0"   required>
                                             <option>Select Gender</option>
                                         </select>
                                         <label asp-for="Gender" class="form-label"></label>

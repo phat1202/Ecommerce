@@ -21,6 +21,7 @@
                             <div class="row gy-3 overflow-hidden">
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
+                                        <span asp-validation-for="Email"></span>
                                         <input asp-for="Email" class="form-control border-0 border-bottom rounded-0" name="email" id="email" placeholder="name@example.com" required>
                                         <label asp-for="Email" class="form-label">Email</label>
                                     </div>
@@ -35,7 +36,7 @@
                                     <div class="row justify-content-between">
                                         <div class="col-6">
                                             <div class="form-check">
-                                                <input asp-for="Remember" class="form-check-input" type="checkbox" value="" name="remember_me" id="remember_me">
+                                                <input asp-for="Remember" class="form-check-input" type="checkbox">
                                                 <label asp-for="Remember" class="form-check-label text-secondary" for="remember_me">
                                                     Remember me
                                                 </label>

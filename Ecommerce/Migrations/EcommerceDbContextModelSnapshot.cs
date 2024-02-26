@@ -187,6 +187,9 @@ namespace Ecommerce.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("CartId")
                         .HasColumnType("varchar(255)");
 
@@ -197,7 +200,7 @@ namespace Ecommerce.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Gender")
+                    b.Property<int?>("Gender")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -224,7 +227,7 @@ namespace Ecommerce.Migrations
                     b.Property<Guid>("ResetPasswordGuid")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("Role")
+                    b.Property<int?>("Role")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")

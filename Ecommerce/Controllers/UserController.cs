@@ -9,23 +9,27 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
 using System.Security.Claims;
 using static Ecommerce.Const.EnumClass;
+using SendGrid.Helpers.Mail;
+using System.Net.WebSockets;
+using SendGrid.Helpers.Mail.Model;
 
 namespace Ecommerce.Controllers
 {
     public class UserController : Controller
     {
         private readonly EcommerceDbContext _context;
-        private readonly UserRepositories _userRepo;
-        private readonly CartRepositories _cartRepo;
+        private readonly UserRepository _userRepo;
+        private readonly CartRepository _cartRepo;
         private readonly IMapper _mapper;
         public UserController(EcommerceDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _userRepo = new UserRepositories(_context, _mapper);
-            _cartRepo = new CartRepositories(_context, _mapper);
+            _userRepo = new UserRepository(_context, _mapper);
+            _cartRepo = new CartRepository(_context, _mapper);
         }
         public IActionResult Index()
         {
@@ -42,7 +46,7 @@ namespace Ecommerce.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var userExisting = _userRepo.FirstOrDefault(model);
+                    var userExisting = await _userRepo.FirstOrDefault(model);
                     if (userExisting != null)
                     {
                         return View(userExisting);
@@ -59,10 +63,13 @@ namespace Ecommerce.Controllers
                         Gender = model.Gender,
                         Role = (int)EnumClass.Role.User,
                         CartId = cartUser.CartId,
+                        Phone = model.Phone,
+                        IsActive = true,
+                        IsDelete = false,
                     };
                     _cartRepo.Add(cartUser);
                     _userRepo.Add(newUser);
-                    await _userRepo.CommitAsync();
+                    await _context.SaveChangesAsync();
                     return RedirectToAction("Login");
                 }
                 else
@@ -77,12 +84,22 @@ namespace Ecommerce.Controllers
                 throw;
             }
         }
+        private void ActivateAccount()
+        {
+            EmailSending emailSender = new EmailSending("josiahewalshu@hotmail.com", "jjosi123");
+            emailSender.SendEmail("dominicculen@gmail.com", "Activate", "KKKKKKKKEEEEEEEE");
+        }
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            HttpContext.Session.SetString("ReturnUrl", Request.Headers["Referer"].ToString());
             return View();
         }
         [HttpPost]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -90,7 +107,7 @@ namespace Ecommerce.Controllers
             }
             try
             {
-                var result = LoginValid(model);
+                var result = await LoginValid(model);
                 var returnUrl = HttpContext.Session.GetString("ReturnUrl");
                 HttpContext.Session.Remove("ReturnUrl");
                 if (string.IsNullOrEmpty(returnUrl))
@@ -162,6 +179,13 @@ namespace Ecommerce.Controllers
             };
             return userLogin;
         }
- 
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.SetString("ReturnUrl", Request.Headers["Referer"].ToString());
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var returnUrl = HttpContext.Session.GetString("ReturnUrl");
+            return RedirectToAction("Login");
+        }
+
     }
 }

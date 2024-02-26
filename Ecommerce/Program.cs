@@ -1,3 +1,4 @@
+using Ecommerce.Extensions;
 using Ecommerce.Models;
 using Ecommerce.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -10,7 +11,8 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidCastException("Not");
 builder.Services.AddDbContext<EcommerceDbContext>(options => options.UseMySQL(connectionString));
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(MappingClass));
+builder.Services.AddTransient<StatsService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -23,6 +25,9 @@ builder.Services.AddAuthentication(options =>
     options.AccessDeniedPath = "/User/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromDays(2);
 });
+builder.Services.AddSession(
+
+);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,9 +42,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -23,7 +23,8 @@
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="~/css/style.css" rel="stylesheet">
+
+    <link href="~/css/CrudModel.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -141,10 +142,19 @@
                                 </div>
                                 <a href="contact.html" class="nav-item nav-link">Contact</a>
                             </div>
-                            <div class="navbar-nav ml-auto py-0">
-                                <a asp-action="Login" asp-controller="User" class="nav-item nav-link">Login</a>
-                                <a asp-action="Register" asp-controller="User" class="nav-item nav-link">Register</a>
-                            </div>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <div class="navbar-nav ml-auto py-0">
+                                    <a asp-action="Logout" asp-controller="User" class="nav-item nav-link">Đăng Xuất</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="navbar-nav ml-auto py-0">
+                                    <a asp-action="Login" asp-controller="User" class="nav-item nav-link">Đăng Nhập</a>
+                                    <a asp-action="Register" asp-controller="User" class="nav-item nav-link">Đăng Ký</a>
+                                </div>
+                            }
                         </div>
                     </nav>
                 </div>
