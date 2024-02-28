@@ -1,0 +1,62 @@
+﻿@model Ecommerce.ViewModel.Product.ProductViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutCrudModel.cshtml";
+
+}
+<form asp-action="DeleteProduct" class="form-horizontal">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <fieldset>
+        <!-- Form Name -->
+        <legend>DELETE PRODUCT</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>
+            <div class="col-md-4">
+
+                <label asp-for="ProductName" placeholder="" class="form-control input-md" required="" >@Model.ProductName</label>
+            </div>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_categorie">SELECT CATEGORY</label>
+            <div class="col-md-4">
+                <label asp-for="CategoryNameDisplay" placeholder="" class="form-control input-md" required="">@Model.CategoryNameDisplay</label>
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">QUANTITY</label>
+            <div class="col-md-4">
+                <label asp-for="Quantity" placeholder="0" class="form-control input-md" required="" >@Model.Quantity</label>
+            </div>
+        </div>
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">PRICE</label>
+            <div class="col-md-4">
+                <label asp-for="Price" placeholder="0" class="form-control input-md" required="">@Model.Price</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">CREATED DATE</label>
+            <div class="col-md-4">
+                <label asp-for="CreatedAtDisplay" placeholder="0" class="form-control input-md" required="">@Model.CreatedAtDisplay</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">STATUS</label>
+            <div class="col-md-4">
+                <label asp-for="IsActiveStatus" placeholder="0" class="form-control input-md" required="">@Model.IsActiveStatus</label>
+            </div>
+        </div>
+        <div class="container mx-auto text-center">
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </fieldset>
+</form>

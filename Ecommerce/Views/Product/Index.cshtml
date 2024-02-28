@@ -1,4 +1,4 @@
-﻿@model Ecommerce.ViewModel.Product.ProductViewModel
+﻿@model List<Ecommerce.ViewModel.Product.ProductViewModel>
 @{
     Layout = "~/Views/Shared/_LayoutCrudModel.cshtml";
 }
@@ -6,6 +6,28 @@
 <script>
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
+    });
+    $(document).ready(function () {
+        $('.delete').click(function (e) {
+            e.preventDefault(); 
+            var productId = $(this).data('product-id');          
+            if (confirm('Are you sure you want to delete this item?')) {
+            
+                $.ajax({
+                    type: 'POST',
+                    url: '/Product/DeleteProduct',
+                    data: { id: productId },
+                    success: function (data) {
+
+                        console.log('Item deleted successfully');
+
+                    },
+                    error: function (error) {
+                        console.error('Error deleting item', error);
+                    }
+                });
+            }
+        });
     });
 </script>
 
@@ -19,7 +41,7 @@
                             <h2>Quản Lý <b>Sản Phẩm</b></h2>
                         </div>
                         <div class="col-sm-7">
-                            <a href="#" class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>Add New Product</span></a>
+                            <a asp-action="CreateProduct" asp-controller="Product" class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>Add New Product</span></a>
                            @*  <a href="#" class="btn btn-secondary"><i class="material-icons">&#xE24D;</i> <span>Export to Excel</span></a> *@
                         </div>
                     </div>
@@ -37,8 +59,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
-                        <tr>
+                        @foreach(var item in Model)
+                        {
+                            <tr>
+                                <td>1</td>
+                                <td><a href="#"><img src="/examples/images/avatar/1.jpg" class="avatar" alt="">@item.ProductName</a></td>
+                                <td>@item.CreatedAtDisplay</td>
+                                <td>@item.CategoryNameDisplay</td>
+                                @if (item.IsDelete)
+                                {
+                                    <td><span class="status text-danger">&bull;</span> @item.IsDeletedStatus</td>
+
+                                }
+                                else if (!item.IsActive && !item.IsDelete)
+                                {
+                                    <td><span class="status text-warning">&bull;</span> @item.IsActiveStatus</td>
+
+                                }
+                                else
+                                {
+                                    
+                                    <td><span class="status text-success">&bull;</span> @item.IsActiveStatus</td>
+
+                                }
+                                <td>@item.Quantity</td>
+                                <td>
+                                    <a asp-action="DeleteProduct" asp-controller="Product" asp-route-Id="@item.ProductId" class="settings" title="Settings" data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
+                                    <a href="#" class="delete" title="Delete" data-toggle="tooltip" data-product-id="@item.ProductId">
+                                        <i class="material-icons">&#xE5C9;</i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    @*     <tr>
                             <td>1</td>
                             <td><a href="#"><img src="/examples/images/avatar/1.jpg" class="avatar" alt="">Áo Sơ Mi Evisu</a></td>
                             <td>04/10/2013</td>
@@ -73,10 +126,10 @@
                                 <a href="#" class="settings" title="Settings" data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
                                 <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE5C9;</i></a>
                             </td>
-                        </tr>
+                        </tr> *@
                     </tbody>
                 </table>
-                <div class="clearfix">
+@*                 <div class="clearfix">
                     <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
                     <ul class="pagination">
                         <li class="page-item disabled"><a href="#">Previous</a></li>
@@ -87,7 +140,7 @@
                         <li class="page-item"><a href="#" class="page-link">5</a></li>
                         <li class="page-item"><a href="#" class="page-link">Next</a></li>
                     </ul>
-                </div>
+                </div> *@
             </div>
         </div>
     </div>

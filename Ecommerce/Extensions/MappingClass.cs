@@ -12,9 +12,18 @@ namespace Ecommerce.Extensions
         {
             CreateMap<CartCrudModel, Cart>();
             CreateMap<UserCrudModel, User>();
-            CreateMap<CategoryCrudModel, Category>();
+            //Category
+            //CreateMap<CategoryCrudModel, Category>();
+            CreateMap<Category, CategoryCrudModel>().ReverseMap();
             CreateMap<Category, CategoryViewModel>();
+
+            //Product
             CreateMap<ProductCrudModel, Product>();
+            CreateMap<Product, ProductCrudModel>();
+            CreateMap<Product, ProductViewModel>();
+            CreateMap<ProductCrudModel, ProductViewModel>();
+            //Image
+            CreateMap<ProductImageCrudModel, Image>();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Ecommerce.Extensions
         }
         public List<Category> GetAllCategories()
         {
-            return _context.Set<Category>().ToList();
+            return _context.Set<Category>().OrderBy(item => item.Name).ToList();
         }
     }
 }

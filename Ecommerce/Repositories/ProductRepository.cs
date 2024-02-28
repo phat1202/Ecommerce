@@ -2,6 +2,7 @@
 using Ecommerce.Models;
 using Ecommerce.ViewModel.Product;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Linq.Expressions;
 
 namespace Ecommerce.Repositories
 {
@@ -20,9 +21,9 @@ namespace Ecommerce.Repositories
             var result = _mapper.Map<ProductCrudModel>(product);
             return result;
         }
-        public List<Product> GetAll()
+        public IQueryable<Product> GetItem()
         {
-            return _context.Set<Product>().ToList();
+            return _context.Set<Product>();
         }
         public void Add(ProductCrudModel product)
         {
@@ -38,6 +39,11 @@ namespace Ecommerce.Repositories
         {
             var data = _mapper.Map<Product>(product);
             _context.Set<Product>().Remove(data);
+        }
+        public Product FirstOrDefault(Expression<Func<Product, bool>> model)
+        {
+            IQueryable<Product> data = _context.Set<Product>();
+            return data.FirstOrDefault(model);
         }
         public async Task<int> CommitAsync()
         {

@@ -5,54 +5,92 @@
 
 }
 
-<h1>CreateProduct</h1>
 
-<h4>Product</h4>
 <hr />
-<div class="row">
-    <div class="col-md-7">
-        <form asp-action="CreateProduct">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ProductId" class="control-label"></label>
-                <input asp-for="ProductId" class="form-control" />
-                <span asp-validation-for="ProductId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductName" class="control-label"></label>
-                <input asp-for="ProductName" class="form-control" />
+<form asp-action="CreateProduct" class="form-horizontal" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <fieldset>
+        <!-- Form Name -->
+        <legend>CREATE PRODUCT</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>
+            <div class="col-md-4">
+                <input asp-for="ProductName" placeholder="PRODUCT NAME" class="form-control input-md" required="" type="text">
                 <span asp-validation-for="ProductName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ProductDescription" class="control-label"></label>
-                <input asp-for="ProductDescription" class="form-control" />
-                <span asp-validation-for="ProductDescription" class="text-danger"></span>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_categorie">SELECT CATEGORY</label>
+            <div class="col-md-4">
+                <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-control">
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">QUANTITY</label>
+            <div class="col-md-4">
+                <input asp-for="Quantity" placeholder="0" class="form-control input-md" required="" type="number">
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+        </div>
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">PRICE</label>
+            <div class="col-md-4">
+                <input asp-for="Price" placeholder="PRICE" class="form-control input-md" required="" type="number">
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+        </div>
+        <!-- Textarea -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_description">PRODUCT DESCRIPTION</label>
+            <div class="col-md-4">
+                <textarea asp-for="ProductDescription" class="form-control" id="product_description" name="product_description"></textarea>
+                <span asp-validation-for="ProductDescription" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+
+        @*         <!-- Text input-->
+        <div class="form-group">
+        <label class="col-md-4 control-label" for="percentage_discount">PERCENTAGE DISCOUNT</label>
+        <div class="col-md-4">
+        <input id="percentage_discount" name="percentage_discount" placeholder="PERCENTAGE DISCOUNT" class="form-control input-md" required="" type="text">
+
+        </div>
+        </div> *@
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="approuved_by">UPLOAD FILE IMAGE</label>
+            <div class="col-md-4">
+
+                <!-- File Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="filebutton">main_image</label>
+                    <div class="col-md-4">
+                        <input asp-for="FileImage" class="input-file" type="file">
+                    </div>
+                </div>
+
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="singlebutton">Single Button</label>
+                    <div class="col-md-4">
+                        <button id="singlebutton" name="singlebutton" class="btn btn-primary">Button</button>
+                    </div>
+                </div>
             </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+        </div>
+    </fieldset>
+</form>
 @* @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 } *@

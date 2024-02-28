@@ -13,6 +13,7 @@ builder.Services.AddDbContext<EcommerceDbContext>(options => options.UseMySQL(co
 
 builder.Services.AddAutoMapper(typeof(MappingClass));
 builder.Services.AddTransient<StatsService>();
+builder.Services.AddSingleton<ImageUpLoading>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;

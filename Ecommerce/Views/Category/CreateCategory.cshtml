@@ -1,31 +1,32 @@
-﻿@model Ecommerce.ViewModel.Category.CategoryCrudModel
+﻿@model Ecommerce.ViewModel.Category.CategoryViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutCrudModel.cshtml";
     ViewData["Title"] = "CreateCategory";
 }
 
-<h1>CreateCategory</h1>
+<form asp-action="CreateCategory" class="form-horizontal">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <fieldset>
+        <legend>CREATE PRODUCT</legend>
 
-<h4>Category</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateCategory">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">CATEGORY NAME</label>
+            <div class="col-md-4">
+                <input asp-for="Name" placeholder="CATEGORY NAME" class="form-control input-md" required="" type="text">
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="singlebutton">Single Button</label>
+            <div class="col-md-4">
+                <button id="singlebutton" name="singlebutton" class="btn btn-primary">Button</button>
             </div>
-        </form>
-    </div>
-</div>
+        </div>
+    </fieldset>
+</form>
 
-<div>
+<div class="align-items-center">
     <a asp-action="Index">Back to List</a>
 </div>
-

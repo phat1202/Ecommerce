@@ -27,11 +27,10 @@ namespace Ecommerce.Controllers
             foreach(var item in listCategory)
             {
                 var data = _mapper.Map<CategoryViewModel>(item);
-                if (data.IsActive)
+                if (!data.IsDelete)
                 {
-                    
+                    result.Add(data);
                 }
-                result.Add(data);
             }
 
             return View(result);
@@ -55,5 +54,6 @@ namespace Ecommerce.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
+        
     }
 }
