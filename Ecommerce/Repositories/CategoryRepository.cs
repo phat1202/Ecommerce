@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Models;
 using Ecommerce.ViewModel.Category;
+using System.Linq.Expressions;
 
 namespace Ecommerce.Repositories
 {
@@ -37,6 +38,15 @@ namespace Ecommerce.Repositories
         {
             var data = _mapper.Map<Category>(category);
             _context.Set<Category>().Remove(data);
+        }
+        public Category FirstOrDefault(Expression<Func<Category, bool>> model)
+        {
+            IQueryable<Category> data = _context.Set<Category>();
+            return data.FirstOrDefault(model);
+        }
+        public IQueryable<Category> GetItem()
+        {
+            return _context.Set<Category>();
         }
         public async Task<int> CommitAsync()
         {

@@ -118,12 +118,47 @@ namespace Ecommerce.Controllers
                 return Json(new { success = true, message = "Không thể xóa sản phẩm" });
             }
         }
-        //[HttpPost]
-        //public IActionResult DeleteProduct(ProductViewModel product)
-        //{
-        //    product.IsDelete = true;
-        //    product.IsActive = false;
-        //    return RedirectToAction("Index");
-        //}
+        
+        public IActionResult EditProduct(string id)
+        {
+            var product = _productRepo.FirstOrDefault(p => p.ProductId == id);
+            if (product == null)
+            {
+                return RedirectToAction("Index");
+            }
+            var result = _mapper.Map<ProductCrudModel>(product);
+            var categories = _categoryRepo.GetAll();
+
+            var categorylist = _mapper.Map<List<CategoryViewModel>>(categories);
+            ViewData["CategoryList"] = new SelectList(categorylist, "CategoryId", "Name");
+            return View(result);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProduct(ProductCrudModel model)
+        {
+            try
+            {
+                _mapper.Map<Product>(model);
+                var product = _productRepo.FirstOrDefault(p => p.ProductId == model.ProductId);
+                if (product == null)
+                {
+                    return View();
+                }
+                product.ProductName = model.ProductName;
+                product.ProductDescription = model.ProductDescription;
+                product.Price = model.Price;
+                product.CategoryId = model.CategoryId;
+                product.UpdatedAt = DateTime.Now;
+                product.Quantity = model.Quantity;
+                product.IsActive = model.IsActive;
+                product.IsDelete = model.IsDelete;
+                await _productRepo.CommitAsync();
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return View();
+            }
+        }
     }
 }

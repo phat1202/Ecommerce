@@ -15,13 +15,11 @@ namespace Ecommerce.Extensions
             //Category
             //CreateMap<CategoryCrudModel, Category>();
             CreateMap<Category, CategoryCrudModel>().ReverseMap();
-            CreateMap<Category, CategoryViewModel>();
-
+            CreateMap<Category, CategoryViewModel>().ReverseMap();
             //Product
-            CreateMap<ProductCrudModel, Product>();
-            CreateMap<Product, ProductCrudModel>();
-            CreateMap<Product, ProductViewModel>();
-            CreateMap<ProductCrudModel, ProductViewModel>();
+            CreateMap<ProductCrudModel, Product>().ReverseMap(); ;
+            CreateMap<Product, ProductViewModel>().ReverseMap(); ;
+            CreateMap<ProductCrudModel, ProductViewModel>().ReverseMap(); ;
             //Image
             CreateMap<ProductImageCrudModel, Image>();
         }

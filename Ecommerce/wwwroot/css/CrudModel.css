@@ -5,6 +5,11 @@
     font-size: 13px;
 }
 
+.myElement {
+    display: none;
+}
+
+
 .table-responsive {
     margin: 30px 0;
 }

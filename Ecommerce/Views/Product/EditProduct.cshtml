@@ -1,0 +1,97 @@
+﻿@model Ecommerce.ViewModel.Product.ProductCrudModel
+@{
+    Layout = "~/Views/Shared/_LayoutCrudModel.cshtml";
+
+}
+<form asp-action="EditProduct" class="form-horizontal">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="ProductId" class="myElement" onkeydown="javascript: return ['Backspace','Delete','ArrowRight']
+                                        .includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'"
+           class="form-control" />
+    <fieldset>
+        <!-- Form Name -->
+        <legend>DELETE PRODUCT</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>
+            <div class="col-md-4">
+
+                <input asp-for="ProductName" class="form-control input-md" required="">
+            </div>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_categorie">SELECT CATEGORY</label>
+            <div class="col-md-4">
+                <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-control">
+                </select>
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">QUANTITY</label>
+            <div class="col-md-4">
+                <input asp-for="Quantity" type="number" class="form-control input-md" required="">
+            </div>
+        </div>
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">PRICE</label>
+            <div class="col-md-4">
+                <input asp-for="Price" type="number" class="form-control input-md" required="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">Product Description</label>
+            <div class="col-md-4">
+                <textarea asp-for="ProductDescription" class="form-control input-md"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">CREATED DATE</label>
+            <div class="col-md-4">
+                <input asp-for="CreatedAt" readonly class="form-control input-md" required=""></input>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">UPDATE AT</label>
+            <div class="col-md-4">
+                <input asp-for="UpdatedAt" readonly class="form-control input-md"></input>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label">Trạng Thái Hoạt Động</label>
+            <div class="col-md-4">
+                <input asp-for="IsActive" type="checkbox">
+                @if (Model.IsActive)
+                {
+                    <label class="control-label"> Sản phẩm đang hoạt động</label>
+                }
+                else
+                {
+                    <label class="control-label"> Sản phẩm đã tạm ngừng hoạt động</label>
+                }
+            </div>
+        </div>
+        @if (Model.IsDelete)
+        {
+            <div class="form-group">
+                <label class="col-md-4 control-label">Trạng Thái</label>
+                <div class="col-md-4">
+                    <input asp-for="IsDelete">
+
+                    <label class="control-label"> Sản phẩm đã bị xóa (Chọn để hoạt động lại)</label>
+
+                </div>
+            </div>
+        }
+        <div class="container mx-auto text-center">
+            <input type="submit" value="Update" class="btn btn-danger" /> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </fieldset>
+    <br />
+</form>

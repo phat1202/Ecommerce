@@ -12,6 +12,13 @@ namespace Ecommerce.ViewModel.Category
                 return IsActive ? "Đang Hoạt Động" : "Tạm Dừng";
             }
         }
+        public string? IsDeletedStatus
+        {
+            get
+            {
+                return IsDelete ? "Đã Xóa" : null;
+            }
+        }
         public string? CreatedAtDisplay
         {
             get
