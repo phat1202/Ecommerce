@@ -4,6 +4,7 @@ using AutoMapper;
 using Ecommerce.ViewModel.User;
 using Ecommerce.ViewModel.Category;
 using Ecommerce.ViewModel.Product;
+using Ecommerce.ViewModel.Image;
 namespace Ecommerce.Extensions
 {
     public class MappingClass : Profile
@@ -19,9 +20,11 @@ namespace Ecommerce.Extensions
             //Product
             CreateMap<ProductCrudModel, Product>().ReverseMap(); ;
             CreateMap<Product, ProductViewModel>().ReverseMap(); ;
-            CreateMap<ProductCrudModel, ProductViewModel>().ReverseMap(); ;
-            //Image
-            CreateMap<ProductImageCrudModel, Image>();
+            CreateMap<ProductCrudModel, ProductViewModel>().ReverseMap();
+            //ProductImage
+            CreateMap<ProductImageCrudModel, ProductImage>().ReverseMap();
+            //ImageRepo
+            CreateMap<ImageCrudModel, Image>().ReverseMap();
         }
     }
 }

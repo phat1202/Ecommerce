@@ -30,7 +30,7 @@ namespace Ecommerce.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<decimal?>("TotalPrice")
@@ -59,7 +59,7 @@ namespace Ecommerce.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ProductId")
@@ -91,7 +91,7 @@ namespace Ecommerce.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
@@ -134,7 +134,7 @@ namespace Ecommerce.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<decimal?>("Price")
@@ -168,14 +168,12 @@ namespace Ecommerce.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("ImageId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ProductId")
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("ProductId");
 
@@ -186,6 +184,9 @@ namespace Ecommerce.Migrations
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<bool?>("AccountActivated")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Avatar")
                         .HasColumnType("longtext");
@@ -206,7 +207,7 @@ namespace Ecommerce.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
@@ -271,7 +272,9 @@ namespace Ecommerce.Migrations
                 {
                     b.HasOne("Ecommerce.Models.Image", "image")
                         .WithMany()
-                        .HasForeignKey("ImageId");
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Ecommerce.Models.Product", "product")
                         .WithMany("ProductImages")

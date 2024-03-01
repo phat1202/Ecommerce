@@ -41,7 +41,7 @@ namespace Ecommerce.Controllers
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 IsActive = true,
-                IsDelete = false,
+                IsDeleted = false,
             };
             _categoryRepo.Add(newCategory);
             _context.SaveChanges();
@@ -64,7 +64,7 @@ namespace Ecommerce.Controllers
                 {
                     item.IsActive = false;
                 }
-                category.IsDelete = true;
+                category.IsDeleted = true;
                 category.IsActive = false;
                 await _categoryRepo.CommitAsync();
                 return Json(new { success = true, message = "Xóa danh mục thành công" });
@@ -100,7 +100,7 @@ namespace Ecommerce.Controllers
                 product.Name = model.Name;
                 product.UpdatedAt = DateTime.Now;
                 product.IsActive = model.IsActive;
-                product.IsDelete = model.IsDelete;
+                product.IsDeleted = model.IsDeleted;
                 await _categoryRepo.CommitAsync();
                 return RedirectToAction("Index");
             }

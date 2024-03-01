@@ -16,7 +16,7 @@ namespace Ecommerce.ViewModel.Category
         {
             get
             {
-                return IsDelete ? "Đã Xóa" : null;
+                return IsDeleted ? "Đã Xóa" : null;
             }
         }
         public string? CreatedAtDisplay

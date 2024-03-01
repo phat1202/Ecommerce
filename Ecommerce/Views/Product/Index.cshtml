@@ -67,12 +67,12 @@
                                 <td><a href="#"><img src="/examples/images/avatar/1.jpg" class="avatar" alt="">@item.ProductName</a></td>
                                 <td>@item.CreatedAtDisplay</td>
                                 <td>@item.CategoryNameDisplay</td>
-                                @if (item.IsDelete)
+                                @if (item.IsDeleted)
                                 {
                                     <td><span class="status text-danger">&bull;</span> @item.IsDeletedStatus</td>
 
                                 }
-                                else if (!item.IsActive && !item.IsDelete)
+                                else if (!item.IsActive && !item.IsDeleted)
                                 {
                                     <td><span class="status text-warning">&bull;</span> @item.IsActiveStatus</td>
 

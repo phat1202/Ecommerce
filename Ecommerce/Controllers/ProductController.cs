@@ -3,6 +3,7 @@ using Ecommerce.Extensions;
 using Ecommerce.Models;
 using Ecommerce.Repositories;
 using Ecommerce.ViewModel.Category;
+using Ecommerce.ViewModel.Image;
 using Ecommerce.ViewModel.Product;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,7 +17,8 @@ namespace Ecommerce.Controllers
     {
         private readonly ProductRepository _productRepo;
         private readonly CategoryRepository _categoryRepo;
-        private readonly ProductImageRepository _imageRepo;
+        private readonly ProductImageRepository _productimageRepo;
+        private readonly ImageRepository _imageRepo;
         private readonly EcommerceDbContext _context;
         private readonly ImageUpLoading _uploadFile;
         private readonly IMapper _mapper;
@@ -26,7 +28,8 @@ namespace Ecommerce.Controllers
             _mapper = mapper;
             _productRepo = new ProductRepository(_context, _mapper);
             _categoryRepo = new CategoryRepository(_context, _mapper);
-            _imageRepo = new ProductImageRepository(_context, _mapper);
+            _productimageRepo = new ProductImageRepository(_context, _mapper);
+            _imageRepo = new ImageRepository(_context, _mapper);
             _uploadFile = uploadFile;
         }
         public IActionResult Index()
@@ -74,18 +77,27 @@ namespace Ecommerce.Controllers
                         ProductDescription = productNew.ProductDescription,
                         Quantity = productNew.Quantity,
                         IsActive = true,
-                        IsDelete = false,
+                        IsDeleted = false,
                         CategoryId = productNew.CategoryId,
                     };
                     var imageUrl = _uploadFile.UploadImage(productNew.FileImage);
-                    var imageProduct = new ProductImageCrudModel
+                    var image = new ImageCrudModel
                     {
-                        ImageId = imageUrl,
+                        ImageUrl = imageUrl,
+                    };
+                    var productImage = new ProductImageCrudModel
+                    {
+                        ImageId = image.ImageId,
                         ProductId = product.ProductId,
                     };
-                    _imageRepo.Add(imageProduct);
+                    _imageRepo.Add(image);
+                    await _context.SaveChangesAsync();
+                    //Lỗi savechanges Product Image
+                    _productimageRepo.Add(productImage);
+                    await _context.SaveChangesAsync();
+
                     _productRepo.Add(product);
-                    await _productRepo.CommitAsync();
+                    await _context.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }
                 catch (Exception)
@@ -105,7 +117,7 @@ namespace Ecommerce.Controllers
                 {
                     return RedirectToAction("Index");
                 }
-                product.IsDelete = true;
+                product.IsDeleted = true;
                 product.IsActive = false;
                 await _productRepo.CommitAsync();
                 //var result = _mapper.Map<ProductViewModel>(product);
@@ -151,7 +163,7 @@ namespace Ecommerce.Controllers
                 product.UpdatedAt = DateTime.Now;
                 product.Quantity = model.Quantity;
                 product.IsActive = model.IsActive;
-                product.IsDelete = model.IsDelete;
+                product.IsDeleted = model.IsDeleted;
                 await _productRepo.CommitAsync();
                 return RedirectToAction("Index");
             }

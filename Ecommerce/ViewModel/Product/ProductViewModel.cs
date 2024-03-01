@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Models;
 using Ecommerce.ViewModel.Category;
+using Ecommerce.ViewModel.Image;
 using Org.BouncyCastle.Bcpg;
 
 namespace Ecommerce.ViewModel.Product
@@ -17,7 +18,7 @@ namespace Ecommerce.ViewModel.Product
         {
             get
             {
-                return IsDelete ? "Đã Xóa" : null;
+                return IsDeleted ? "Đã Xóa" : null;
             }
         }
         public string? CreatedAtDisplay
@@ -28,5 +29,7 @@ namespace Ecommerce.ViewModel.Product
             }
         }
         public string? CategoryNameDisplay { get; set; }
+        public List<ProductImageViewModel>? productImage { get; set; }
+        public List<ImageViewModel>? ListProductImage { get; set; }
     }
 }

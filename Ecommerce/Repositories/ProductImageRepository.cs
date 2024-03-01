@@ -16,18 +16,18 @@ namespace Ecommerce.Repositories
         }
         public void Add(ProductImageCrudModel image)
         {
-            var data = _mapper.Map<Image>(image);
-            _context.Set<Image>().Add(data);
+            var data = _mapper.Map<ProductImage>(image);
+            _context.Set<ProductImage>().Add(data);
         }
         public void Update(ProductImageCrudModel image)
         {
-            var data = _mapper.Map<Image>(image);
-            _context.Set<Image>().Update(data);
+            var data = _mapper.Map<ProductImage>(image);
+            _context.Set<ProductImage>().Update(data);
         }
         public void Delete(ProductImageCrudModel image)
         {
-            var data = _mapper.Map<Image>(image);
-            _context.Set<Image>().Remove(data);
+            var data = _mapper.Map<ProductImage>(image);
+            _context.Set<ProductImage>().Remove(data);
         }
     }
 }

@@ -65,7 +65,8 @@ namespace Ecommerce.Controllers
                         CartId = cartUser.CartId,
                         Phone = model.Phone,
                         IsActive = true,
-                        IsDelete = false,
+                        IsDeleted = false,
+                        AccountActivated = false,
                     };
                     _cartRepo.Add(cartUser);
                     _userRepo.Add(newUser);

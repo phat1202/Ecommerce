@@ -14,6 +14,6 @@ namespace Ecommerce.Models
         [DefaultValue(true)]
         public bool IsActive { get; set; }
         [DefaultValue(false)]
-        public bool IsDelete { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
