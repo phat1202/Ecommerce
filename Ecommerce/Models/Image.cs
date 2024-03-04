@@ -2,7 +2,7 @@
 
 namespace Ecommerce.Models
 {
-    public class BaseImage
+    public class BaseImage : BaseClass
     {
         public BaseImage()
         {

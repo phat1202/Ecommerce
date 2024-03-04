@@ -2,6 +2,7 @@
 using Ecommerce.Models;
 using Ecommerce.ViewModel.Image;
 using Ecommerce.ViewModel.Product;
+using Ecommerce.ViewModel.User;
 
 namespace Ecommerce.Repositories
 {
@@ -14,6 +15,11 @@ namespace Ecommerce.Repositories
             _context = context;
             _mapper = mapper;
         }
+        public IQueryable<ProductImage> GetItem()
+        {
+            return _context.Set<ProductImage>();
+        }
+
         public void Add(ProductImageCrudModel image)
         {
             var data = _mapper.Map<ProductImage>(image);

@@ -1,7 +1,9 @@
-﻿using Ecommerce.Models;
+﻿using CloudinaryDotNet.Actions;
+using Ecommerce.Models;
 using Ecommerce.ViewModel.Category;
 using Ecommerce.ViewModel.Image;
 using Org.BouncyCastle.Bcpg;
+using System.Globalization;
 
 namespace Ecommerce.ViewModel.Product
 {
@@ -28,7 +30,16 @@ namespace Ecommerce.ViewModel.Product
                 return CreatedAt.ToString("dd/MM/yyyy");
             }
         }
+        public string? PriceDisplay
+        {
+            get
+            {            
+                CultureInfo culture = CultureInfo.GetCultureInfo("vi-VN");
+                return String.Format(culture, "{0:c}", Price);
+            }
+        }
         public string? CategoryNameDisplay { get; set; }
+        public string? ProductImageUrl { get; set; }
         public List<ProductImageViewModel>? productImage { get; set; }
         public List<ImageViewModel>? ListProductImage { get; set; }
     }

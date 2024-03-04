@@ -7,6 +7,8 @@ using Ecommerce.ViewModel.Image;
 using Ecommerce.ViewModel.Product;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.Evaluation;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using NuGet.DependencyResolver;
@@ -91,13 +93,9 @@ namespace Ecommerce.Controllers
                         ProductId = product.ProductId,
                     };
                     _imageRepo.Add(image);
-                    await _context.SaveChangesAsync();
-                    //Lỗi savechanges Product Image
-                    _productimageRepo.Add(productImage);
-                    await _context.SaveChangesAsync();
-
                     _productRepo.Add(product);
-                    await _context.SaveChangesAsync();
+                    _productimageRepo.Add(productImage);
+                    await _productRepo.CommitAsync();
                     return RedirectToAction("Index");
                 }
                 catch (Exception)
@@ -172,5 +170,57 @@ namespace Ecommerce.Controllers
                 return View();
             }
         }
+        public IActionResult ProductImageIndex(string Id)
+        {
+            var images_result = new List<ImageViewModel>();
+            var product = _productRepo.GetItem().First(p => p.ProductId == Id);
+            var product_Images = _productimageRepo.GetItem().Where(x => x.ProductId == Id).Include(i => i.image).ToList();
+            foreach (var item in product_Images)
+            {
+                if (item.ProductId == Id)
+                {
+                    var image = new ImageViewModel
+                    {
+                        ImageId = item.ImageId,
+                        ImageUrl = item.image.ImageUrl,
+                        ProductId = product.ProductId,
+                    };
+                    images_result.Add(image);
+                }
+            }
+            return View(images_result);
+        }
+        [HttpPost]
+        public IActionResult CreateNewProductImage(IFormFile imageFile, string productId)
+        {
+            try
+            {
+                var product = _productRepo.GetItem().First(p => p.ProductId == productId);
+                if (product == null)
+                {
+                    return Json(new { success = false, message = "Có lỗi đã xảy ra" });
+                }
+
+                var imageUrl = _uploadFile.UploadImage(imageFile);
+                var image = new ImageCrudModel
+                {
+                    ImageUrl = imageUrl,
+                };
+                var productImage = new ProductImageCrudModel
+                {
+                    ImageId = image.ImageId,
+                    ProductId = product.ProductId,
+                };
+                _imageRepo.Add(image);
+                _productimageRepo.Add(productImage);
+
+                return Json(new { success = true, message = "Thêm hình ảnh thành công" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi đã xảy ra: " + ex.Message });
+            }
+        }
+
     }
 }

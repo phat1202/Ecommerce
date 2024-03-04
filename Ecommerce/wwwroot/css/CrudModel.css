@@ -97,6 +97,7 @@ table.table td:last-child i {
     opacity: 0.9;
     font-size: 22px;
     margin: 0 5px;
+
 }
 
 table.table td a {
@@ -123,10 +124,13 @@ table.table td i {
 }
 
 table.table .avatar {
-    border-radius: 50%;
+    border-radius: 20%;
     vertical-align: middle;
     margin-right: 10px;
+    width: 50px; 
+    height: auto;
 }
+
 
 .status {
     font-size: 30px;

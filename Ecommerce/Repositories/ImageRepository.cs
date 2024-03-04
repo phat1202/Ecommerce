@@ -14,6 +14,10 @@ namespace Ecommerce.Repositories
             _context = context;
             _mapper = mapper;
         }
+        public IQueryable<Image> GetItem()
+        {
+            return _context.Set<Image>();
+        }
         public void Add(ImageCrudModel image)
         {
             var data = _mapper.Map<Image>(image);

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ecommerce.Models
 {
-    public class BaseProductImage
+    public class BaseProductImage : BaseClass
     {
         public BaseProductImage()
         {

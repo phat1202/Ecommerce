@@ -56,6 +56,7 @@
                             <th>Thuộc Danh Mục</th>
                             <th>Trạng Thái</th>
                             <th>Số Lượng</th>
+                            <th>Hình ảnh</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -64,7 +65,7 @@
                         {
                             <tr>
                                 <td>1</td>
-                                <td><a href="#"><img src="/examples/images/avatar/1.jpg" class="avatar" alt="">@item.ProductName</a></td>
+                                <td><a href="#">@item.ProductName</a></td>
                                 <td>@item.CreatedAtDisplay</td>
                                 <td>@item.CategoryNameDisplay</td>
                                 @if (item.IsDeleted)
@@ -85,6 +86,11 @@
                                 }
                                 <td>@item.Quantity</td>
                                 <td>
+                                    <a asp-action="ProductImageIndex" asp-controller="Product" asp-route-Id="@item.ProductId">
+                                        <i class="fas fa-images">&#xE8B8;</i>
+                                    </a>
+                                </td>
+                                <td>                                  
                                     <a asp-action="EditProduct" asp-controller="Product" asp-route-Id="@item.ProductId" class="settings" title="Settings" data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
                                     <a href="#" class="delete" title="Delete" data-toggle="tooltip" data-product-id="@item.ProductId">
                                         <i class="material-icons">&#xE5C9;</i>

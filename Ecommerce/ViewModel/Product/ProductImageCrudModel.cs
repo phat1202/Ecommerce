@@ -4,7 +4,5 @@ namespace Ecommerce.ViewModel.Product
 {
     public class ProductImageCrudModel : BaseProductImage
     {
-        public IFormFile? FileImage { get; set; }
-        public string? ProductId { get; set; }
     }
 }
