@@ -3,6 +3,7 @@ using Ecommerce.Models;
 using Ecommerce.ViewModel.Image;
 using Ecommerce.ViewModel.Product;
 using Ecommerce.ViewModel.User;
+using System.Linq.Expressions;
 
 namespace Ecommerce.Repositories
 {
@@ -30,10 +31,14 @@ namespace Ecommerce.Repositories
             var data = _mapper.Map<ProductImage>(image);
             _context.Set<ProductImage>().Update(data);
         }
-        public void Delete(ProductImageCrudModel image)
+        public void Delete(ProductImage image)
+        {       
+            _context.Set<ProductImage>().Remove(image);
+        }
+        public ProductImage FirstOrDefault(Expression<Func<ProductImage, bool>> model)
         {
-            var data = _mapper.Map<ProductImage>(image);
-            _context.Set<ProductImage>().Remove(data);
+            IQueryable<ProductImage> data = _context.Set<ProductImage>();
+            return data.FirstOrDefault(model);
         }
     }
 }

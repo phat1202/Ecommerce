@@ -27,5 +27,41 @@ namespace Ecommerce.Extensions
                 return imageUrl;
             }
         }
+        public bool RemoveImageByUrl(string imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl))
+            {
+                return false;
+            }
+            var publicId = GetPublicIdFromImageUrl(imageUrl);
+
+            if (string.IsNullOrEmpty(publicId))
+            {
+                return false;
+            }
+
+            var account = new Account("dqnsplymn", "279175116359664", "Oii8kBOmGAaOw_Wadnp0Rwc9oFk");
+            var cloudinary = new Cloudinary(account);
+
+            var deletionParams = new DeletionParams(publicId)
+            {
+                ResourceType = ResourceType.Image 
+            };
+
+            var result = cloudinary.Destroy(deletionParams);
+
+            return result.Result == "ok";
+        }
+        private string GetPublicIdFromImageUrl(string imageUrl)
+        {
+            var uri = new Uri(imageUrl);
+            var segments = uri.Segments;         
+            if (segments.Length >= 2)
+            {
+                return segments[segments.Length - 2].TrimEnd('/');
+            }
+
+            return null;
+        }
     }
 }

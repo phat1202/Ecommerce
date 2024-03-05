@@ -177,7 +177,7 @@ namespace Ecommerce.Controllers
             var product_Images = _productimageRepo.GetItem().Where(x => x.ProductId == Id).Include(i => i.image).ToList();
             foreach (var item in product_Images)
             {
-                if (item.ProductId == Id)
+                if (item.ProductId == Id && item.IsActive == true)
                 {
                     var image = new ImageViewModel
                     {
@@ -188,10 +188,11 @@ namespace Ecommerce.Controllers
                     images_result.Add(image);
                 }
             }
+            images_result.OrderBy(c => c.CreatedAt);
             return View(images_result);
         }
         [HttpPost]
-        public IActionResult CreateNewProductImage(IFormFile imageFile, string productId)
+        public async Task<IActionResult> CreateNewProductImageAsync(IFormFile imageFile, string productId)
         {
             try
             {
@@ -200,25 +201,53 @@ namespace Ecommerce.Controllers
                 {
                     return Json(new { success = false, message = "Có lỗi đã xảy ra" });
                 }
-
                 var imageUrl = _uploadFile.UploadImage(imageFile);
                 var image = new ImageCrudModel
                 {
                     ImageUrl = imageUrl,
+                    CreatedAt = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false
                 };
                 var productImage = new ProductImageCrudModel
                 {
                     ImageId = image.ImageId,
                     ProductId = product.ProductId,
+                    CreatedAt = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false
                 };
                 _imageRepo.Add(image);
                 _productimageRepo.Add(productImage);
-
+                await _productRepo.CommitAsync();
                 return Json(new { success = true, message = "Thêm hình ảnh thành công" });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Có lỗi đã xảy ra: " + ex.Message });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteProductImage(string id)
+        {
+            try
+            {   
+                var image = _imageRepo.FirstOrDefault(i => i.ImageId == id);
+                var productImage = _productimageRepo.FirstOrDefault(p => p.ImageId == image.ImageId);
+                if (image == null)
+                {
+                    return RedirectToAction("Index");
+                }
+                //_uploadFile.RemoveImageByUrl(image.ImageUrl);              
+                _productimageRepo.Delete(productImage);
+                _imageRepo.Delete(image);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Xóa hình ảnh thành công" });
+            }
+            catch (Exception)
+            {
+
+                return Json(new { success = true, message = "Không thể xóa hình ảnh" });
             }
         }
 

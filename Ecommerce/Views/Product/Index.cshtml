@@ -1,6 +1,7 @@
 ﻿@model List<Ecommerce.ViewModel.Product.ProductViewModel>
 @{
     Layout = "~/Views/Shared/_LayoutCrudModel.cshtml";
+    int number = 0;
 }
 
 <script>
@@ -64,7 +65,7 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>1</td>
+                                <td>@(++number)</td>
                                 <td><a href="#">@item.ProductName</a></td>
                                 <td>@item.CreatedAtDisplay</td>
                                 <td>@item.CategoryNameDisplay</td>
