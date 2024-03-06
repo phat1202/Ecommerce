@@ -1,6 +1,6 @@
 ﻿@model Ecommerce.ViewModel.User.LoginModel
 @{
-    Layout = "~/Views/Shared/_LayoutLogin.cshtml"; 
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
 }
 <section class="py-3 py-md-5 py-xl-8">
     <div class="container">
@@ -44,18 +44,24 @@
                                         </div>
                                         <div class="col-6">
                                             <div class="text-end">
-                                                <a href="#!" class="link-secondary text-decoration-none">Forgot password?</a>
+                                                <a href="#!" class="link-secondary text-decoration-none">Quên mật khẩu</a>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
+                                @if (Model?.ErrorMessage != null)
+                                {
+                                    <p class="text-danger">*@Html.Raw(Model.ErrorMessage)</p>
+                                }
                                 <div class="col-12">
                                     <div class="d-grid">
-                                        <button class="btn btn-lg btn-dark rounded-0 fs-6" type="submit">Log in</button>
+                                        <button class="btn btn-lg btn-dark rounded-0 fs-6" type="submit">Đăng Nhập</button>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </form>           
+
                     </div>
                     <div class="col-12 col-lg-2 d-flex align-items-center justify-content-center gap-3 flex-lg-column">
                         <div class="bg-dark h-100 d-none d-lg-block" style="width: 1px; --bs-bg-opacity: .1;"></div>

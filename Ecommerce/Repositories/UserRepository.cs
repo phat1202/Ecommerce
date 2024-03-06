@@ -3,6 +3,7 @@ using Ecommerce.Models;
 using Ecommerce.ViewModel.User;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Ecommerce.Repositories
 {
@@ -40,7 +41,7 @@ namespace Ecommerce.Repositories
             var data = _mapper.Map<User>(user);
             _context.Set<User>().Remove(data);
         }
-        public async Task<UserCrudModel> FirstOrDefault(UserCrudModel model)
+        public async Task<UserCrudModel> CheckUserExist(UserCrudModel model)
         {
             var data = await _context.Set<User>().FirstOrDefaultAsync(u => u.Email.Trim().ToLower() == model.Email.Trim().ToLower());
             if(data == null)
@@ -53,6 +54,11 @@ namespace Ecommerce.Repositories
                 return model;
             }
 
+        }
+        public User FirstOrDefault(Expression<Func<User, bool>> model)
+        {
+            IQueryable<User> data = _context.Set<User>();
+            return data.FirstOrDefault(model);
         }
         public async Task<int> CommitAsync()
         {

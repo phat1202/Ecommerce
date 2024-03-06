@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Ecommerce.Models;
 using Ecommerce.ViewModel.Cart;
+using Ecommerce.ViewModel.User;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Linq.Expressions;
 using System.Net.WebSockets;
 using ZstdSharp.Unsafe;
 
@@ -34,6 +36,11 @@ namespace Ecommerce.Repositories
         public async Task<int> CommitAsync()
         {
             return await _context.SaveChangesAsync();
+        }
+        public Cart FirstOrDefault(Expression<Func<Cart, bool>> model)
+        {
+            IQueryable<Cart> data = _context.Set<Cart>();
+            return data.FirstOrDefault(model);
         }
     }
 }

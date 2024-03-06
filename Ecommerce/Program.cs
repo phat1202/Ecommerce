@@ -29,6 +29,14 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddSession(
 
 );
+
+builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
+{
+    options.Conventions.AddPageRoute(
+                     "/Home",
+                     "/ChiTietSanPham.html"
+                 );
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

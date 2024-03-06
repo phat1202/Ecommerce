@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "nO+jKLT3mU9+SXjFBNQtj16Sw5N1Ob0tYZmyJwo5joQ=",
+  "Hash": "zOJecw0l7OSLFjsVoc7Y9DoBtjlszkT3sDo1jhTqr/8=",
   "Source": "Ecommerce",
   "BasePath": "_content/Ecommerce",
   "Mode": "Default",
@@ -528,6 +528,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\img\\product-8.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\img\\tam_het_hang.png",
+      "SourceId": "Ecommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\",
+      "BasePath": "_content/Ecommerce",
+      "RelativePath": "img/tam_het_hang.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\tam_het_hang.png"
     },
     {
       "Identity": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\img\\user.jpg",

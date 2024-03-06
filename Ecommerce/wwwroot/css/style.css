@@ -65,6 +65,19 @@ body {
   background-color: #fff;
 }
 
+.out-of-stock-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1; /* Ensure the out-of-stock image is on top of the product image */
+    display: none; /* Initially hide the out-of-stock image */
+}
+
+.card.product-item:hover .out-of-stock-image {
+    display: block; /* Show the out-of-stock image on hover (optional) */
+}
+
 [tabindex="-1"]:focus:not(:focus-visible) {
   outline: 0 !important;
 }

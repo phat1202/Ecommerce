@@ -26,6 +26,12 @@ namespace Ecommerce.Extensions
             CreateMap<ProductImage, ProductImageViewModel>().ReverseMap();
             //ImageRepo
             CreateMap<ImageCrudModel, Image>().ReverseMap();
+            //Cart
+            CreateMap<CartCrudModel, Cart>().ReverseMap();
+            CreateMap<CartViewModel, Cart>().ReverseMap();
+            //CartItem
+            CreateMap<CartItem, CartItemCrudModel>().ReverseMap();
+            CreateMap<CartItemViewModel, CartItem>().ReverseMap();
         }
     }
 }

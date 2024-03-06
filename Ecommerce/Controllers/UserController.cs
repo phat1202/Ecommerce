@@ -46,7 +46,7 @@ namespace Ecommerce.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var userExisting = await _userRepo.FirstOrDefault(model);
+                    var userExisting = await _userRepo.CheckUserExist(model);
                     if (userExisting != null)
                     {
                         return View(userExisting);
@@ -109,6 +109,11 @@ namespace Ecommerce.Controllers
             try
             {
                 var result = await LoginValid(model);
+                if(result == null)
+                {
+                    model.ErrorMessage = "Đăng nhập thất bại";
+                    return View(model);
+                }
                 var returnUrl = HttpContext.Session.GetString("ReturnUrl");
                 HttpContext.Session.Remove("ReturnUrl");
                 if (string.IsNullOrEmpty(returnUrl))
@@ -139,7 +144,7 @@ namespace Ecommerce.Controllers
                                                             && u.Password == model.Password.Hash());
             try
             {
-                if(user != null)
+                if (user != null)
                 {
                     var login = CreateAuthenication(user);
                     var claims = new List<Claim>()
@@ -160,12 +165,12 @@ namespace Ecommerce.Controllers
                 }
                 else
                 {
-                    throw new Exception("Đăng nhập thất bại");
+                    //throw new Exception("Đăng nhập thất bại");
+                    return null;
                 }
             }
             catch (Exception )
             {
-
                 throw ;
             }
         }
@@ -173,6 +178,7 @@ namespace Ecommerce.Controllers
         {
             var userLogin = new UserViewModel
             {
+                UserId = user.UserId,
                 Email = user.Email,
                 Gender = user.Gender,
                 Name = user.Name,
