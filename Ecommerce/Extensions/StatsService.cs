@@ -3,6 +3,7 @@ using Ecommerce.Models;
 using Ecommerce.ViewModel.Category;
 using Ecommerce.ViewModel.Product;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Ecommerce.Extensions
 {
@@ -48,6 +49,11 @@ namespace Ecommerce.Extensions
                 item.ProductImageUrl = productImage.image.ImageUrl;
             }
             return result;
+        }
+        public string ConvertIntoVNDFormat(decimal? money)
+        {
+            CultureInfo culture = CultureInfo.GetCultureInfo("vi-VN");
+            return string.Format(culture, "{0:c}", money);
         }
     }
 }

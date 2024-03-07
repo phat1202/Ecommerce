@@ -28,10 +28,10 @@ namespace Ecommerce.Repositories
             var data = _mapper.Map<CartItem>(cartitem);
             _context.Set<CartItem>().Update(data);
         }
-        public void Delete(CartItemCrudModel cartitem)
+        public void Delete(CartItem cartitem)
         {
-            var data = _mapper.Map<CartItem>(cartitem);
-            _context.Set<CartItem>().Remove(data);
+            //var data = _mapper.Map<CartItem>(cartitem);
+            _context.Set<CartItem>().Remove(cartitem);
         }
         public async Task<int> CommitAsync()
         {
