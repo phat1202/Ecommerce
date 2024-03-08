@@ -22,5 +22,19 @@ namespace Ecommerce.Const
             [Display(Name = "User")]
             User = 2,
         }
+        public enum OrderStatus
+        {
+            [Display(Name = "Pending")]
+            Pending = 0,
+            [Display(Name = "Processing")]
+            Processing = 1,
+            [Display(Name = "Shipped")]
+            Shipped = 2,
+            [Display(Name = "Delivered")]
+            Delivered = 3,
+            [Display(Name = "Canceled")]
+            Canceled = 4,
+            
+       }
     }
 }

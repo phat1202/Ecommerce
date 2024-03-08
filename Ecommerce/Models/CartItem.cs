@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ecommerce.Models
@@ -14,6 +15,8 @@ namespace Ecommerce.Models
         public int? Quantity { get; set; }
         public string? ProductId { get; set; }
         public string? CartId { get; set; }
+        [DefaultValue(true)]
+        public bool? ItemSelected { get; set; }
     }
     public class CartItem : BaseCartItem
     {

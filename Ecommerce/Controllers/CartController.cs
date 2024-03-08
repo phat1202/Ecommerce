@@ -2,9 +2,11 @@
 using Ecommerce.Models;
 using Ecommerce.Repositories;
 using Ecommerce.ViewModel.Cart;
+using Ecommerce.ViewModel.Order;
 using Ecommerce.ViewModel.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -95,55 +97,18 @@ namespace Ecommerce.Controllers
             }
             return Json(new { success = false, loginError = true, message = "Bạn cần phải đăng nhập trước." });
         }
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateCartItem(string productId, int? quantity, string action)
-        //{
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        var product = _productRepo.FirstOrDefault(p => p.ProductId == productId);
-        //        var userId = HttpContext.User.Claims.First().Value;
-        //        var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
-        //        var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
-        //        var quantityItemUpdate = _cartItemRepo.FirstOrDefault(i => i.ProductId == product.ProductId && i.CartId == cartUser.CartId);
-        //        switch (action)
-        //        {
-        //            case "plus":
-        //                quantityItemUpdate.Quantity = quantity ?? quantityItemUpdate.Quantity++;
-        //                break;
-        //            case "minus":
-        //                if (quantity == null)
-        //                {
-        //                    if (quantityItemUpdate.Quantity == 0 )
-        //                    {
-        //                        var data = _mapper.Map<CartItemCrudModel>(quantityItemUpdate);
-        //                        _cartItemRepo.Delete(data);
-        //                    }
-        //                    else
-        //                    {
-        //                        quantityItemUpdate.Quantity--;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    quantityItemUpdate.Quantity = quantity;
-        //                }
-        //                break;
-        //            default:
-        //                return RedirectToAction("Index");
-        //        }
-        //        await _productRepo.CommitAsync();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return RedirectToAction("Login", "User");
-        //}
         [HttpPost]
-        public IActionResult DeleteCartItem(string productId)
+        public async Task<IActionResult> DeleteCartItemAsync(string productId)
         {
             var product = _productRepo.FirstOrDefault(p => p.ProductId == productId);
             var userId = HttpContext.User.Claims.First().Value;
             var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
             var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
-
+            var cartItem = _cartItemRepo.FirstOrDefault(i => i.ProductId == product.ProductId 
+                                                          && i.CartId == cartUser.CartId);
+            //var result = _mapper.Map<CartItemCrudModel>(cartItem);
+            _cartItemRepo.Delete(cartItem);
+            await _cartItemRepo.CommitAsync();
             return Ok();
         }
         [HttpPost]
@@ -170,7 +135,8 @@ namespace Ecommerce.Controllers
             if (quantityItemUpdate.Quantity == 1)
             {
                 //var data = _mapper.Map<CartItemCrudModel>(quantityItemUpdate);
-                _cartItemRepo.Delete(quantityItemUpdate);
+                //_cartItemRepo.Delete(quantityItemUpdate);
+                quantityItemUpdate.Quantity = 1;
             }
             else
             {
@@ -178,6 +144,29 @@ namespace Ecommerce.Controllers
             }
             await _cartItemRepo.CommitAsync();
             return Ok();
+        }
+        public IActionResult SelectItem(string itemId)
+        {
+            var result = _cartItemRepo.FirstOrDefault(i => i.CartItemId == itemId);
+            if (result.ItemSelected == true)
+            {
+                result.ItemSelected = false;
+            }
+            else
+            {
+                result.ItemSelected = true;
+            }
+            _context.SaveChanges();
+            return Ok();
+        }
+        public IActionResult CheckOut()
+        {
+            var userId = HttpContext.User.Claims.First().Value;
+            var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
+            var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
+            var ItemOrders = _cartItemRepo.GetItem().Where(i => i.ItemSelected == true).ToList();
+            var data = _mapper.Map<List<OrderItemViewModel>>(ItemOrders);
+            return View();
         }
     }
 }

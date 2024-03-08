@@ -26,6 +26,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\trgta\OneDrive\Desktop\C#\PP\Ecommerce\Ecommerce
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Cart/CheckOut.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxDaGVja091dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Cart/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

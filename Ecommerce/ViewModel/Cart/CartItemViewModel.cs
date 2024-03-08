@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Models;
 using Ecommerce.ViewModel.Product;
+using System.ComponentModel;
 
 namespace Ecommerce.ViewModel.Cart
 {

@@ -5,6 +5,7 @@ using Ecommerce.ViewModel.User;
 using Ecommerce.ViewModel.Category;
 using Ecommerce.ViewModel.Product;
 using Ecommerce.ViewModel.Image;
+using Ecommerce.ViewModel.Order;
 namespace Ecommerce.Extensions
 {
     public class MappingClass : Profile
@@ -32,6 +33,12 @@ namespace Ecommerce.Extensions
             //CartItem
             CreateMap<CartItem, CartItemCrudModel>().ReverseMap();
             CreateMap<CartItemViewModel, CartItem>().ReverseMap();
+            //Order
+            CreateMap<OrderCrudModel, Order>().ReverseMap();
+            CreateMap<OrderViewModel, Order>().ReverseMap();       
+            //OrderItem
+            CreateMap<OrderItemCrudModel, OrderItem>().ReverseMap();
+            CreateMap<OrderItemViewModel, OrderItem>().ReverseMap();
         }
     }
 }

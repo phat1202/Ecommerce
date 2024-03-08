@@ -59,6 +59,24 @@
             }
         });
     }
+    //
+    $(document).ready(function () {
+        $('input[type="checkbox"]').change(function () {
+            var itemId = $(this).data('item-id');
+            var isChecked = $(this).prop('checked');
+            $.ajax({
+                type: 'POST',
+                url: '/Cart/SelectItem',
+                data: { itemId: itemId, isChecked: isChecked },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function () {
+                    console.error('Error calling ToggleItem action.');
+                }
+            });
+        });
+    });
 </script>
 <div class="container-fluid bg-secondary mb-5">
     <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
@@ -85,17 +103,24 @@
                             <th>Products</th>
                             <th>Price</th>
                             <th>Quantity</th>
-                            <th>Total</th>
+                            <th>TotalPrice</th>
+                            <th>Select</th>
                             <th>Remove</th>
                         </tr>
                     </thead>
                     <tbody class="align-middle">
                         @foreach (var item in Model)
                         {
-                            var totalOfProduct = item.Quantity * item.Product.Price;
+                            decimal? itemPriceSelected;
+                            if (item.ItemSelected == true)
+                            {
+                                itemPriceSelected = item.Product.Price;
+                            }
+                            else{ itemPriceSelected = 0; }
+                            var pricePerProduct = _statsService.ConvertIntoVNDFormat(item.Quantity * item.Product.Price);
+                            var totalOfProduct = item.Quantity * itemPriceSelected;
                             var totalOfProductDisplay = _statsService.ConvertIntoVNDFormat(totalOfProduct);
                             total += (decimal)totalOfProduct;
-
                             <tr>
                                 <td class="text-left"><img src="@item.Product.ProductImageUrl" alt="" style="width: 50px;"> @item.Product.ProductName</td>
                                 <td class="align-middle">@item.Product.PriceDisplay</td>
@@ -114,7 +139,16 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="align-middle">@totalOfProductDisplay</td>
+                                <td class="align-middle">@pricePerProduct</td>
+                                <td class="align-middle">
+                                    <input class="shop-tooltip close float-none text-danger" type="checkbox" title=""
+                                           value="@item.ItemSelected" data-original-title="Remove" id="itemCheckbox_@item.CartItemId" data-item-id="@item.CartItemId"
+                                    @if (item.ItemSelected == true)
+                                    {
+                                        <text>checked</text>
+                                    }/>
+
+                                </td>
                                 <td class="align-middle">
                                     <a href="#" class="btn btn-sm btn-primary btn-remove" data-product-id="@item.Product.ProductId">
                                         <i class="fa fa-times"></i>

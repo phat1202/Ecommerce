@@ -62,6 +62,9 @@ namespace Ecommerce.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool?>("ItemSelected")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("ProductId")
                         .HasColumnType("varchar(255)");
 
