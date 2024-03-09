@@ -43,5 +43,17 @@ namespace Ecommerce.Repositories
             IQueryable<Order> data = _context.Set<Order>();
             return data.FirstOrDefault(model);
         }
+        public User GetUserByOrderId(string orderID)
+        {
+            var data = orderID.Substring(orderID.Length - 4);
+
+            //var data = new string(orderID.Take(4).ToArray());
+            var user = _context.Set<User>().FirstOrDefault(u => u.UserId.Contains(data));
+            if(user == null)
+            {
+                return null;
+            }
+            return user;
+        }
     }
 }

@@ -11,9 +11,10 @@ namespace Ecommerce.Extensions
     public class MappingClass : Profile
     {
         public MappingClass()
-        {
-            CreateMap<CartCrudModel, Cart>();
-            CreateMap<UserCrudModel, User>();
+        {        
+            //User
+            CreateMap<UserCrudModel, User>().ReverseMap();
+            CreateMap<UserViewModel, User>().ReverseMap();
             //Category
             //CreateMap<CategoryCrudModel, Category>();
             CreateMap<Category, CategoryCrudModel>().ReverseMap();

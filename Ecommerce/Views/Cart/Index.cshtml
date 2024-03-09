@@ -39,7 +39,13 @@
             url: '/Cart/PlusCartItem',
             data: { productId: productId },
             success: function (response) {
-                location.reload();
+                if (response && response.success) {
+                    location.reload();
+                } else {
+                    location.reload();
+                    console.error('Error adding item to cart: ', response && response.errorMessage);
+                    alert(response && response.errorMessage || "Xin chờ một chút");
+                }
             },
             error: function (error) {
                 console.error('Error adding item to cart: ', error);
@@ -156,7 +162,12 @@
                                 </td>
                             </tr>
                         }
-
+                        @if (ViewBag.ErrorMessage != null)
+                        {
+                            <p class="alert alert-danger" role="alert">
+                                @ViewBag.ErrorMessage
+                            </p>
+                        }
                     </tbody>
                 </table>
             </div>

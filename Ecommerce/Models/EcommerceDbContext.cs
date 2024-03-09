@@ -16,6 +16,8 @@ namespace Ecommerce.Models
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL("Server=localhost;port=3306;Database=ecommerce;username=root;Password=123456;Persist security Info = True");

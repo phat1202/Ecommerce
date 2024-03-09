@@ -4,6 +4,7 @@ using Ecommerce.Repositories;
 using Ecommerce.ViewModel.Cart;
 using Ecommerce.ViewModel.Order;
 using Ecommerce.ViewModel.Product;
+using Ecommerce.ViewModel.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
@@ -23,6 +24,8 @@ namespace Ecommerce.Controllers
         private readonly CartRepository _cartRepo;
         private readonly EcommerceDbContext _context;
         private readonly CartItemRepository _cartItemRepo;
+        private readonly OrderRepository _orderRepo;
+        private readonly OrderItemRepository _orderItemRepo;
         private readonly IMapper _mapper;
         public CartController(EcommerceDbContext context, IMapper mapper)
         {
@@ -35,6 +38,8 @@ namespace Ecommerce.Controllers
             _userRepo = new UserRepository(_context, _mapper);
             _cartRepo = new CartRepository(_context, _mapper);
             _cartItemRepo = new CartItemRepository(_context, _mapper);
+            _orderRepo = new OrderRepository(_context, _mapper);
+            _orderItemRepo = new OrderItemRepository(_context, _mapper);
         }
         public IActionResult Index()
         {
@@ -61,7 +66,7 @@ namespace Ecommerce.Controllers
             return RedirectToAction("Login", "User");
         }
         [HttpPost]
-        public async Task <IActionResult> AddItemToCart(string productId)
+        public async Task<IActionResult> AddItemToCart(string productId)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -74,7 +79,7 @@ namespace Ecommerce.Controllers
                     return Json(new { success = false, loginError = false, message = "Sản phẩm đã hết hàng" });
                 }
                 var checkItemExist = _cartItemRepo.FirstOrDefault(i => i.ProductId == productId && i.CartId == cartUser.CartId);
-                if(checkItemExist == null)
+                if (checkItemExist == null)
                 {
                     var newItem = new CartItemCrudModel
                     {
@@ -104,7 +109,7 @@ namespace Ecommerce.Controllers
             var userId = HttpContext.User.Claims.First().Value;
             var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
             var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
-            var cartItem = _cartItemRepo.FirstOrDefault(i => i.ProductId == product.ProductId 
+            var cartItem = _cartItemRepo.FirstOrDefault(i => i.ProductId == product.ProductId
                                                           && i.CartId == cartUser.CartId);
             //var result = _mapper.Map<CartItemCrudModel>(cartItem);
             _cartItemRepo.Delete(cartItem);
@@ -115,13 +120,18 @@ namespace Ecommerce.Controllers
         public async Task<IActionResult> PlusCartItemAsync(string productId)
         {
             var product = _productRepo.FirstOrDefault(p => p.ProductId == productId);
+            var quantityAvailable = product.Quantity;
             var userId = HttpContext.User.Claims.First().Value;
             var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
             var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
             var quantityItemUpdate = _cartItemRepo.FirstOrDefault(i => i.ProductId == product.ProductId && i.CartId == cartUser.CartId);
             quantityItemUpdate.Quantity++;
+            if(quantityItemUpdate.Quantity > quantityAvailable)
+            {
+                return Json(new { success = false, errorMessage = "Số lượng bạn đặt đã đạt mức tối đa của sản phẩm này" });
+            }
             await _cartItemRepo.CommitAsync();
-            return Ok();
+            return Json(new { success = true, errorMessage = "" });
         }
         [HttpPost]
         public async Task<IActionResult> MinusCartItemAsync(string productId)
@@ -164,9 +174,93 @@ namespace Ecommerce.Controllers
             var userId = HttpContext.User.Claims.First().Value;
             var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
             var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
-            var ItemOrders = _cartItemRepo.GetItem().Where(i => i.ItemSelected == true).ToList();
-            var data = _mapper.Map<List<OrderItemViewModel>>(ItemOrders);
+            var ItemOrders = _cartItemRepo.GetItem().Where(i => i.ItemSelected == true && i.CartId == cartUser.CartId)
+                .Include(p => p.product)
+                .Include(c => c.cart)
+                .ToList();
+            var userView = _mapper.Map<UserViewModel>(user);
+            var cartView = _mapper.Map<CartViewModel>(cartUser);
+            var cartItemView = _mapper.Map<List<CartItemViewModel>>(ItemOrders);
+            cartView.CartItems = cartItemView;
+            userView.Cart = cartView;
+            return View(userView);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CheckOut(UserViewModel model)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var userId = HttpContext.User.Claims.First().Value;
+            var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
+            var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
+            var ItemOrders = _cartItemRepo.GetItem().Where(i => i.ItemSelected == true && i.CartId == cartUser.CartId)
+                                        .Include(p => p.product).ToList();
+            var productsSold = new List<string>();
+            decimal SubtotalOrder = 0;
+            string AddressDelivery;
+            if (model.DeliveryDifferentAddress)
+            {
+                AddressDelivery = model.AddressDelivery;
+            }
+            else
+            {
+                AddressDelivery = user.Address;
+            }
+            foreach(var item in ItemOrders)
+            {
+                var price = item.Quantity * item.product.Price;
+                SubtotalOrder += (decimal)price;
+            }
+            var newOrder = new OrderCrudModel
+            {
+                OrderTitle = "",
+                OrderCode = "ORD" + DateTime.Now.Ticks + GetIdCode(userId),
+                CreatedAt = DateTime.Now,
+                OrderStatus = 0,
+                UserId = userId,
+                Address = AddressDelivery,
+                TotalPrice = SubtotalOrder,
+            };
+            _orderRepo.Add(newOrder);
+            //await _orderRepo.CommitAsync();
+            //Create OrderItem List
+            foreach(var item in ItemOrders)
+            {
+                var orderItems = new OrderItemCrudModel
+                {
+                    ProductId = item.ProductId,
+                    Price = item.Quantity * item.product.Price,
+                    Quantity = item.Quantity,
+                    OrderId = newOrder.OrderId,
+                    CreatedAt= DateTime.Now,
+                    IsActive = true,
+                };
+                _orderItemRepo.Add(orderItems);
+                await _orderItemRepo.CommitAsync();
+
+                //Remove CartItem
+                _cartItemRepo.Delete(item);
+                await _cartItemRepo.CommitAsync();
+                //Cập nhật số lượng hàng trong Kho.
+                var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId); 
+                product.Quantity = product.Quantity - item.Quantity;   
+                await _productRepo.CommitAsync();
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult Test()
+        {
+            var order = _context.Orders.First().OrderCode;
+            var data = _orderRepo.GetUserByOrderId(order);
             return View();
+        }
+        private string GetIdCode(string userId)
+        {
+            string[] parts = userId.Split('-');
+            string secondPartWithHyphen = parts[1].ToUpper();
+            return secondPartWithHyphen;
         }
     }
 }

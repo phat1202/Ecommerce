@@ -30,6 +30,7 @@ namespace Ecommerce.Models
         public bool? AccountActivated { get; set; }
         public Guid ResetPasswordGuid { get; set; }
         public string? CartId { get; set; }
+        public string? Address { get; set; }
     }
     public class User : BaseUser
     {
