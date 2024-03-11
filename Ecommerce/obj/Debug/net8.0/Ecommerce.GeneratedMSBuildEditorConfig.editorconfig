@@ -46,8 +46,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcnlcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/EndUser/ShopViewing.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5kVXNlclxTaG9wVmlld2luZy5jc2h0bWw=
+[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/EndUser/DetailOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5kVXNlclxEZXRhaWxPcmRlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/EndUser/HistoryOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5kVXNlclxIaXN0b3J5T3JkZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Home/Index.cshtml]

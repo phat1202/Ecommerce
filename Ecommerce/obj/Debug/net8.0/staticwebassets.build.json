@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "zOJecw0l7OSLFjsVoc7Y9DoBtjlszkT3sDo1jhTqr/8=",
+  "Hash": "aEZgOHuAHldX2GgC1lj+Q83aFOk/EfxiBhUVCGkydyY=",
   "Source": "Ecommerce",
   "BasePath": "_content/Ecommerce",
   "Mode": "Default",
@@ -110,6 +110,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\CrudModel.css"
+    },
+    {
+      "Identity": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\css\\Invoice.css",
+      "SourceId": "Ecommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\",
+      "BasePath": "_content/Ecommerce",
+      "RelativePath": "css/Invoice.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\Invoice.css"
     },
     {
       "Identity": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\css\\style.css",

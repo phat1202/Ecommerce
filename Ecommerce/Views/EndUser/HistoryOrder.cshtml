@@ -1,0 +1,59 @@
+﻿@model List<Ecommerce.ViewModel.Order.OrderViewModel>
+@{
+    var number = 0;
+}
+<body>
+    <div class="container-xl">
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <h2>Lịch sử <b>đơn hàng </b></h2>
+                        </div>
+
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Mã đơn hàng</th>
+                            <th>Sản phẩm</th>
+                            <th>Ngày Tạo Đơn</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng Thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count() > 0)
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@(++number)</td>
+                                    @foreach (var p in item.OrderItems)
+                                    {
+                                        <td><img src="@p.product.ProductImageUrl" class="avatarOrderHistory" alt="" /></td>
+                                    }
+                                    <td>@item.OrderTitle</td>
+                                    <td>@item.CreatedAtDisplay</td>
+                                    <td>@item.TotalPrice</td>
+                                    <td>@item.StatusOrder</td>
+                                    <td>
+                                        <a asp-action="DetailOrder" asp-controller="EndUser" asp-route-orderId="@item.OrderId">
+                                            Chi Tiết
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</body>

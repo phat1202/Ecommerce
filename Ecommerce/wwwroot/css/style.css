@@ -65,6 +65,16 @@ body {
   background-color: #fff;
 }
 
+.avatarOrderHistory {
+    border-radius: 20%;
+    vertical-align: middle;
+    margin-right: 10px;
+    max-width: 50px; /* Set a maximum width for the image */
+    width: 100%; /* Make the image fill the available width */
+    height: auto; /* Maintain the aspect ratio */
+}
+
+
 .out-of-stock-image {
     position: absolute;
     top: 50%;
