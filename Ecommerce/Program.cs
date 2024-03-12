@@ -26,9 +26,14 @@ builder.Services.AddAuthentication(options =>
     options.AccessDeniedPath = "/User/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromDays(2);
 });
-builder.Services.AddSession(
+//builder.Services.AddDistributedMemoryCache();
 
-);
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromDays(3);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
 {
