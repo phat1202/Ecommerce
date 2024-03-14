@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "aEZgOHuAHldX2GgC1lj+Q83aFOk/EfxiBhUVCGkydyY=",
+  "Hash": "aRvPFPZ9eG9tt2LPwsXIb1BAm+LkkNVeEOjKhaif3q8=",
   "Source": "Ecommerce",
   "BasePath": "_content/Ecommerce",
   "Mode": "Default",
@@ -3872,6 +3872,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\scss\\style.scss"
+    },
+    {
+      "Identity": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\template\\invoice.html",
+      "SourceId": "Ecommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\",
+      "BasePath": "_content/Ecommerce",
+      "RelativePath": "template/invoice.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\template\\invoice.html"
     }
   ]
 }

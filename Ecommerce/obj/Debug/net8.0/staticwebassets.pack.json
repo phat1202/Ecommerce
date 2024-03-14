@@ -801,6 +801,10 @@
       "PackagePath": "staticwebassets\\scss\\style.scss"
     },
     {
+      "Id": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\template\\invoice.html",
+      "PackagePath": "staticwebassets\\template\\invoice.html"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Ecommerce.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

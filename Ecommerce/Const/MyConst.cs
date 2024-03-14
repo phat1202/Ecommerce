@@ -2,6 +2,6 @@
 {
     public class MyConst
     {
-        public static string CartKey = "MYCARTKEKEKE";
+        public static string CartKey = "MYGIOHANGKEKEKE";
     }
 }

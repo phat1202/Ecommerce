@@ -26,7 +26,7 @@ builder.Services.AddAuthentication(options =>
     options.AccessDeniedPath = "/User/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromDays(2);
 });
-//builder.Services.AddDistributedMemoryCache();
+builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {

@@ -46,14 +46,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcnlcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/EndUser/DetailOrder.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5kVXNlclxEZXRhaWxPcmRlci5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/EndUser/HistoryOrder.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5kVXNlclxIaXN0b3J5T3JkZXIuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -68,6 +60,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Home/ShopViewing.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTaG9wVmlld2luZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Order/DetailOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcRGV0YWlsT3JkZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Order/HistoryOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcSGlzdG9yeU9yZGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Product/CreateProduct.cshtml]
@@ -92,6 +92,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Shared/_LayoutAfterOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRBZnRlck9yZGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/trgta/OneDrive/Desktop/C\#/PP/Ecommerce/Ecommerce/Views/Shared/_LayoutCrudModel.cshtml]

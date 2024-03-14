@@ -131,7 +131,7 @@ namespace Ecommerce.Controllers
                 };
                 myCart.Add(item);
                 HttpContext.Session.Set(MyConst.CartKey, myCart);
-                return Json(new { success = false, loginError = true, message = "Bạn cần phải đăng nhập trước." });
+                return Json(new { success = true, loginError = true, message = "Sản phẩm đã được thêm vào giỏ hàng." });
             }
         }
         [HttpPost]
@@ -286,65 +286,107 @@ namespace Ecommerce.Controllers
         {
             try
             {
-                if (!User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-                var userId = HttpContext.User.Claims.First().Value;
-                var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
-                var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
-                var ItemOrders = _cartItemRepo.GetItem().Where(i => i.ItemSelected == true && i.CartId == cartUser.CartId)
-                                            .Include(p => p.product).ToList();
-                var productsSold = new List<string>();
+
                 decimal SubtotalOrder = 0;
-                string AddressDelivery;
-                if (model.DeliveryDifferentAddress)
+                if (User.Identity.IsAuthenticated)
                 {
-                    AddressDelivery = model.AddressDelivery;
+                    var userId = HttpContext.User.Claims.First().Value;
+                    var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
+                    var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
+                    var ItemOrders = _cartItemRepo.GetItem().Where(i => i.ItemSelected == true && i.CartId == cartUser.CartId)
+                                                .Include(p => p.product).ToList();
+                    string AddressDelivery;
+                    if (model.DeliveryDifferentAddress)
+                    {
+                        AddressDelivery = model.AddressDelivery;
+                    }
+                    else
+                    {
+                        AddressDelivery = user.Address;
+                    }
+                    foreach (var item in ItemOrders)
+                    {
+                        var price = item.Quantity * item.product.Price;
+                        SubtotalOrder += (decimal)price;
+                    }
+                    var newOrder = new OrderCrudModel
+                    {
+                        OrderTitle = ItemOrders.FirstOrDefault().product.ProductName,
+                        OrderCode = "ORD" + DateTime.Now.Date.Ticks + GetIdCode(userId),
+                        CreatedAt = DateTime.Now,
+                        OrderStatus = 0,
+                        UserId = userId,
+                        Address = AddressDelivery,
+                        TotalPrice = SubtotalOrder,
+                    };
+                    _orderRepo.Add(newOrder);
+                    await _orderRepo.CommitAsync();
+                    //Create OrderItem List
+                    foreach (var item in ItemOrders)
+                    {
+                        var orderItems = new OrderItemCrudModel
+                        {
+                            ProductId = item.ProductId,
+                            Price = item.Quantity * item.product.Price,
+                            Quantity = item.Quantity,
+                            OrderId = newOrder.OrderId,
+                            CreatedAt = DateTime.Now,
+                            IsActive = true,
+                        };
+                        _orderItemRepo.Add(orderItems);
+                        await _orderItemRepo.CommitAsync();
+
+                        //Remove CartItem
+                        _cartItemRepo.Delete(item);
+                        await _cartItemRepo.CommitAsync();
+                        //Cập nhật số lượng hàng trong Kho.
+                        var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
+                        product.Quantity = product.Quantity - item.Quantity;
+                        await _productRepo.CommitAsync();
+                    }
                 }
                 else
                 {
-                    AddressDelivery = user.Address;
-                }
-                foreach (var item in ItemOrders)
-                {
-                    var price = item.Quantity * item.product.Price;
-                    SubtotalOrder += (decimal)price;
-                }
-                var newOrder = new OrderCrudModel
-                {
-                    OrderTitle = ItemOrders.FirstOrDefault().product.ProductName,
-                    OrderCode = "ORD" + DateTime.Now.Ticks + GetIdCode(userId),
-                    CreatedAt = DateTime.Now,
-                    OrderStatus = 0,
-                    UserId = userId,
-                    Address = AddressDelivery,
-                    TotalPrice = SubtotalOrder,
-                };
-                _orderRepo.Add(newOrder);
-                await _orderRepo.CommitAsync();
-                //Create OrderItem List
-                foreach (var item in ItemOrders)
-                {
-                    var orderItems = new OrderItemCrudModel
+                    var myCart = Cart;
+                    foreach (var item in myCart)
                     {
-                        ProductId = item.ProductId,
-                        Price = item.Quantity * item.product.Price,
-                        Quantity = item.Quantity,
-                        OrderId = newOrder.OrderId,
+                        var price = item.Quantity * item.Product.Price;
+                        SubtotalOrder += (decimal)price;
+                    }
+                    var newOrder = new OrderCrudModel
+                    {
+                        OrderTitle = myCart.FirstOrDefault().Product.ProductName,
+                        OrderCode = "ORD" + DateTime.Now.Date.Ticks + "NLGY",
                         CreatedAt = DateTime.Now,
-                        IsActive = true,
+                        OrderStatus = 0,
+                        UserId = null,
+                        Address = model.AddressDelivery,
+                        TotalPrice = SubtotalOrder,
                     };
-                    _orderItemRepo.Add(orderItems);
-                    await _orderItemRepo.CommitAsync();
+                    _orderRepo.Add(newOrder);
+                    await _orderRepo.CommitAsync();
+                    //Create OrderItem List
+                    foreach (var item in myCart)
+                    {
+                        var orderItems = new OrderItemCrudModel
+                        {
+                            ProductId = item.ProductId,
+                            Price = item.Quantity * item.Product.Price,
+                            Quantity = item.Quantity,
+                            OrderId = newOrder.OrderId,
+                            CreatedAt = DateTime.Now,
+                            IsActive = true,
+                        };
+                        _orderItemRepo.Add(orderItems);
+                        await _orderItemRepo.CommitAsync();
 
-                    //Remove CartItem
-                    _cartItemRepo.Delete(item);
-                    await _cartItemRepo.CommitAsync();
-                    //Cập nhật số lượng hàng trong Kho.
-                    var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
-                    product.Quantity = product.Quantity - item.Quantity;
-                    await _productRepo.CommitAsync();
+                        //Remove CartItem
+                        myCart.Remove(item);   
+                        //Cập nhật số lượng hàng trong Kho.
+                        var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
+                        product.Quantity = product.Quantity - item.Quantity;
+                        await _productRepo.CommitAsync();
+                    }
                 }
             }
             catch (Exception)
