@@ -19,12 +19,24 @@ namespace Ecommerce.Models
         [Required]
         [MaxLength(255)]
         public string? OrderCode { get; set; }
-        [Required]
-        [MaxLength(255)]
-        public string? Address { get; set; }
+
         [Required]
         public int? OrderStatus { get; set; }
         public decimal? TotalPrice { get; set; }
+        [Required(ErrorMessage = "You must enter this field")]
+        [MaxLength(100, ErrorMessage = "Too Long")]
+        public string? FirstName { get; set; }
+        [Required(ErrorMessage = "You must enter this field")]
+        [MaxLength(100, ErrorMessage = "Too Long")]
+        public string? LastName { get; set; }
+        [Required(ErrorMessage = "You must enter this field")]
+        public string? Country { get; set; }
+        [Required(ErrorMessage = "You must enter this field")]
+        public string? Address { get; set; }
+        [Required(ErrorMessage = "You must enter this field")]
+        public string? City { get; set; }
+        [Required(ErrorMessage = "You must enter this field")]
+        public string? State { get; set; }
         public string? UserId { get; set; }
 
     }

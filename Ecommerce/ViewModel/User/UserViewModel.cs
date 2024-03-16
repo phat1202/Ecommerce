@@ -1,6 +1,7 @@
 ﻿using Ecommerce.Const;
 using Ecommerce.Models;
 using Ecommerce.ViewModel.Cart;
+using Ecommerce.ViewModel.Order;
 
 namespace Ecommerce.ViewModel.User
 {
@@ -15,5 +16,6 @@ namespace Ecommerce.ViewModel.User
         public CartViewModel? Cart { get; set; }
         public string? AddressDelivery { get; set; }
         public bool DeliveryDifferentAddress { get; set; }
+        public OrderViewModel? OrderViewModel { get; set; }
     }
 }

@@ -15,6 +15,7 @@ using static Ecommerce.Const.EnumClass;
 using SendGrid.Helpers.Mail;
 using System.Net.WebSockets;
 using SendGrid.Helpers.Mail.Model;
+using Ecommerce.Extensions.EmailSending;
 
 namespace Ecommerce.Controllers
 {
@@ -31,8 +32,10 @@ namespace Ecommerce.Controllers
             _userRepo = new UserRepository(_context, _mapper);
             _cartRepo = new CartRepository(_context, _mapper);
         }
-        public IActionResult Index()
+        public IActionResult IndexAsync()
         {
+            ActivateAccount();
+            var abc = 2;
             return View();
         }
         public IActionResult Register()
@@ -59,7 +62,8 @@ namespace Ecommerce.Controllers
                     {
                         Email = model.Email,
                         Password = model.Password.Hash(),
-                        Name = model.Name,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
                         Gender = model.Gender,
                         Role = (int)EnumClass.Role.User,
                         CartId = cartUser.CartId,
@@ -71,6 +75,7 @@ namespace Ecommerce.Controllers
                     _cartRepo.Add(cartUser);
                     _userRepo.Add(newUser);
                     await _context.SaveChangesAsync();
+
                     return RedirectToAction("Login");
                 }
                 else
@@ -87,7 +92,11 @@ namespace Ecommerce.Controllers
         }
         private void ActivateAccount()
         {
-            EmailSending emailSender = new EmailSending("josiahewalshu@hotmail.com", "jjosi123");
+            //var receiver = "dominicculen@gmail.com";
+            //var subject = "Test";
+            //var message = "KKKKK";
+            //await _sendingEmail.SendEmailAsync(receiver, subject, message);
+            EmailSender emailSender = new EmailSender();
             emailSender.SendEmail("dominicculen@gmail.com", "Activate", "KKKKKKKKEEEEEEEE");
         }
         public IActionResult Login()
@@ -109,7 +118,7 @@ namespace Ecommerce.Controllers
             try
             {
                 var result = await LoginValid(model);
-                if(result == null)
+                if (result == null)
                 {
                     model.ErrorMessage = "Đăng nhập thất bại";
                     return View(model);
@@ -140,7 +149,7 @@ namespace Ecommerce.Controllers
         }
         private async Task<UserViewModel> LoginValid(LoginModel model)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Trim().ToLower() == model.Email.Trim().ToLower() 
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Trim().ToLower() == model.Email.Trim().ToLower()
                                                             && u.Password == model.Password.Hash());
             try
             {
@@ -150,7 +159,6 @@ namespace Ecommerce.Controllers
                     var claims = new List<Claim>()
                     {
                         new Claim("UserId", login.UserId),
-                        new Claim(ClaimTypes.Name, login.Name),
                         new Claim(ClaimTypes.Email, login.Email),
                         new Claim(ClaimTypes.Gender, ((EnumClass.Gender)login.Gender).ToString()),
                         new Claim(ClaimTypes.Role, ((EnumClass.Role)login.Role).ToString()),
@@ -169,9 +177,9 @@ namespace Ecommerce.Controllers
                     return null;
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
-                throw ;
+                throw;
             }
         }
         private UserViewModel CreateAuthenication(User user)
@@ -181,7 +189,6 @@ namespace Ecommerce.Controllers
                 UserId = user.UserId,
                 Email = user.Email,
                 Gender = user.Gender,
-                Name = user.Name,
                 Role = user.Role,
             };
             return userLogin;

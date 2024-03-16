@@ -1,9 +1,11 @@
 using Ecommerce.Extensions;
+using Ecommerce.Extensions.EmailSending;
 using Ecommerce.Models;
 using Ecommerce.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using System.Net.Mail;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +15,7 @@ builder.Services.AddDbContext<EcommerceDbContext>(options => options.UseMySQL(co
 
 builder.Services.AddAutoMapper(typeof(MappingClass));
 builder.Services.AddTransient<StatsService>();
+builder.Services.AddTransient<EmailSender>();
 builder.Services.AddSingleton<ImageUpLoading>();
 builder.Services.AddAuthentication(options =>
 {
