@@ -123,9 +123,9 @@
                                 itemPriceSelected = item.Product.Price;
                             }
                             else{ itemPriceSelected = 0; }
-                            var pricePerProduct = _statsService.ConvertIntoVNDFormat(item.Quantity * item.Product.Price);
+                            var pricePerProduct = _statsService.ConvertIntoViewFormat(item.Quantity * item.Product.Price);
                             var totalOfProduct = item.Quantity * itemPriceSelected;
-                            var totalOfProductDisplay = _statsService.ConvertIntoVNDFormat(totalOfProduct);
+                            var totalOfProductDisplay = _statsService.ConvertIntoViewFormat(totalOfProduct);
                             total += (decimal)totalOfProduct;
                             <tr>
                                 <td class="text-left"><img src="@item.Product.ProductImageUrl" alt="" style="width: 50px;"> @item.Product.ProductName</td>
@@ -187,17 +187,17 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium">@_statsService.ConvertIntoVNDFormat(total)</h6>
+                            <h6 class="font-weight-medium">@_statsService.ConvertIntoViewFormat(total)</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">@_statsService.ConvertIntoVNDFormat(0)</h6>
+                            <h6 class="font-weight-medium">@_statsService.ConvertIntoViewFormat(0)</h6>
                         </div>
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold">@_statsService.ConvertIntoVNDFormat(total)</h5>
+                            <h5 class="font-weight-bold">@_statsService.ConvertIntoViewFormat(total)</h5>
                         </div>
                         <a asp-action="CheckOut" asp-controller="Cart" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</a>
                     </div>

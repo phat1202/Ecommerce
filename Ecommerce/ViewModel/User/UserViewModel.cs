@@ -14,8 +14,6 @@ namespace Ecommerce.ViewModel.User
         public string? RoleDisplay => Role != null ? Enum.GetName(typeof(EnumClass.Role), Role) : null;
 
         public CartViewModel? Cart { get; set; }
-        public string? AddressDelivery { get; set; }
-        public bool DeliveryDifferentAddress { get; set; }
         public OrderViewModel? OrderViewModel { get; set; }
     }
 }

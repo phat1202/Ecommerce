@@ -17,7 +17,9 @@
             data: { productId: productId },
             success: function (response) {
                 if (response.success) {
+                    // Set the message content in the modal body
                     $('#myModal .modal-body').text(response.message);
+                    // Show the modal
                     $('#myModal').modal('show');
                 } else if (!response.success && response.loginError) {
                     window.location.href = '/User/Login';
@@ -31,8 +33,6 @@
             }
         });
     }
-
-
 </script>
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -248,7 +248,7 @@
                                                 <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
                                             </del>
                                             <div class="d-flex justify-content-center">
-                                                <h6 style="color:red">Tạm hết hàng</h6><h6 class="text-muted ml-2"></h6>
+                                                <h6 style="color:red">Out Of Stock</h6><h6 class="text-muted ml-2"></h6>
                                             </div>
                                         </div>
                                         <div class="card-footer d-flex justify-content-between bg-light border">
@@ -275,7 +275,7 @@
                                     <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
                                 </del>
                                 <div class="d-flex justify-content-center">
-                                    <h6 style="color:red">Tạm hết hàng</h6><h6 class="text-muted ml-2"></h6>
+                                    <h6 style="color:red">Out Of Stock</h6><h6 class="text-muted ml-2"></h6>
                                 </div>
                             </div>
                             <div class="card-footer d-flex justify-content-between bg-light border">

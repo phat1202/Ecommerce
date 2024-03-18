@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Ecommerce.Helpers;
 using Ecommerce.Models;
 using Ecommerce.Repositories;
 using Ecommerce.ViewModel.Order;
@@ -85,44 +86,5 @@ namespace Ecommerce.Controllers
             ordersViewModel.Customer = userView;
             return View(ordersViewModel);
         }
-        //public async Task<IActionResult> GeneratePDF(string orderId)
-        //{
-        //    List<string> listProductName = new List<string>();
-        //    var order = _orderRepo
-        //      .GetItem().Where(x => x.OrderId == orderId)
-        //      .Include(x => x.user)
-        //      .Include(x => x.OrderItems)
-        //        .ThenInclude(x => x.product)
-        //      .FirstOrDefault();
-        //    if (order != null)
-        //    {
-        //        var user = _userRepo.GetById(order.user.UserId);
-        //        if (order.OrderItems != null)
-        //        {
-        //            foreach (var orderItem in order.OrderItems)
-        //            {
-        //                var products = _productRepo.FirstOrDefault(x => x.ProductId == orderItem.ProductId);
-        //                if (products != null)
-        //                {
-        //                    listProductName.Add(products.ProductName);
-        //                }
-        //            }
-        //        }
-        //        var productNameResult = String.Join(", ", listProductName.ToArray());
-        //        var webRoot = _env.WebRootPath;
-        //        var orderTemplate = Path.Combine(webRoot, "template/invoice.html");
-        //        var orderTemplateBody = System.IO.File.ReadAllText(orderTemplate);
-        //        orderTemplateBody = orderTemplateBody
-        //            .Replace("{{orderCode}}", order.OrderCode!.ToString())
-        //            .Replace("{{userName}}", user.Name)
-        //            .Replace("{{address}}", order.Address)
-        //            .Replace("{{productName}}", productNameResult);
-        //        var renderer = new HtmlToPdf();
-        //        renderer.RenderHtmlAsPdf(orderTemplateBody).SaveAs("Order.pdf");
-
-        //    }
-        //    return RedirectToAction("Index");
-        //}
-
     }
 }

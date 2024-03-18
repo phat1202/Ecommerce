@@ -30,12 +30,20 @@ namespace Ecommerce.ViewModel.Product
                 return CreatedAt.ToString("dd/MM/yyyy");
             }
         }
+        //public string? PriceDisplay
+        //{
+        //    get
+        //    {            
+        //        CultureInfo culture = CultureInfo.GetCultureInfo("vi-VN");
+        //        return String.Format(culture, "{0:c}", Price);
+        //    }
+        //}
         public string? PriceDisplay
         {
             get
-            {            
-                CultureInfo culture = CultureInfo.GetCultureInfo("vi-VN");
-                return String.Format(culture, "{0:c}", Price);
+            {
+                CultureInfo culture = CultureInfo.GetCultureInfo("en-US"); // Change to en-US for dollars
+                return string.Format(culture, "{0:c}", Price);
             }
         }
         public string? CategoryNameDisplay { get; set; }

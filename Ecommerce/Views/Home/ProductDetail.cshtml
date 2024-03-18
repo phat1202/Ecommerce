@@ -5,6 +5,73 @@
     var category = _statsService.GetCategoryByProduct(Model.ProductId);
     var products_list = _statsService.GetAllProductByCategory(category.CategoryId);
 }
+<script>
+    $(document).ready(function () {
+        // Decrease quantity button click handler
+        $('.btn-minus').click(function () {
+            var quantityInput = $('#quantityInput');
+            var currentValue = parseInt(quantityInput.val());
+            if (!isNaN(currentValue) && currentValue > 1) {
+                quantityInput.val(currentValue--);
+            }
+        });
+
+        // Increase quantity button click handler
+        $('.btn-plus').click(function () {
+            var quantityInput = $('#quantityInput');
+            var currentValue = parseInt(quantityInput.val());
+            if (!isNaN(currentValue)) {
+                quantityInput.val(currentValue++);
+            }
+        });
+
+        // Add to cart button click handler
+        $('#addToCartButton').click(function (e) {
+            e.preventDefault();
+            var productId = '@Model.ProductId';
+            var quantityInput = $('#quantityInput').val();
+            addItemToCart(productId, quantityInput);
+        });
+
+        // Function to add item to cart via AJAX
+        function addItemToCart(productId, quantity) {
+            $.ajax({
+                type: 'POST',
+                url: '/Cart/AddItemToCart',
+                data: { productId: productId, quantityInput: quantity },
+                success: function (response) {
+                    if (response.success) {
+                        $('#myModal .modal-body').text(response.message);
+                        $('#myModal').modal('show');
+                    } else if (!response.success && response.loginError) {
+                        window.location.href = '/User/Login';
+                    } else {
+                        $('#myModal .modal-body').text(response.message);
+                        $('#myModal').modal('show');
+                    }
+                },
+                error: function (error) {
+                    console.error('Error adding item to cart: ', error);
+                }
+            });
+        }
+    });
+</script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal body content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Shop Detail Start -->
 <div class="container-fluid py-5">
     <div class="row px-xl-5">
@@ -104,14 +171,14 @@
                             <i class="fa fa-minus"></i>
                         </button>
                     </div>
-                    <input type="text" class="form-control bg-secondary text-center" value="1">
+                    <input id="quantityInput" type="text" class="form-control bg-secondary text-center" value="1">
                     <div class="input-group-btn">
                         <button class="btn btn-primary btn-plus">
                             <i class="fa fa-plus"></i>
                         </button>
                     </div>
                 </div>
-                <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+                <button id="addToCartButton" class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
             </div>
             <div class="d-flex pt-2">
                 <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
@@ -250,7 +317,7 @@
             <div class="owl-carousel related-carousel">
                 @foreach (var item in products_list)
                 {
-                    @if(item.ProductId != Model.ProductId)
+                    @if (item.ProductId != Model.ProductId)
                     {
                         <div class="card product-item border-0">
                             <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">

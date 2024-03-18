@@ -1,5 +1,5 @@
 using Ecommerce.Extensions;
-using Ecommerce.Extensions.EmailSending;
+using Ecommerce.Helpers;
 using Ecommerce.Models;
 using Ecommerce.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -57,11 +57,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -29,6 +29,12 @@ namespace Ecommerce.Models
         [Required(ErrorMessage = "You must enter this field")]
         [MaxLength(100, ErrorMessage = "Too Long")]
         public string? LastName { get; set; }
+        [Required(ErrorMessage = "You must enter this field"), EmailAddress]
+        [MaxLength(255, ErrorMessage = "Too Long")]
+        public string? Email { get; set; }
+        [Required(ErrorMessage = "You must enter this field")]
+        [MaxLength(20)]
+        public string? Phone { get; set; }
         [Required(ErrorMessage = "You must enter this field")]
         public string? Country { get; set; }
         [Required(ErrorMessage = "You must enter this field")]

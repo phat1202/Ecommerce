@@ -50,7 +50,7 @@ namespace Ecommerce.Repositories
             }
             else
             {
-                model.ErrorMessage = "Tài khoản đã tồn tại";
+                model.ErrorMessage = "This Email have been registered.";
                 return model;
             }
 

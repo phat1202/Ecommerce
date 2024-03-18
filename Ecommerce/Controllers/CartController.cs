@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Const;
 using Ecommerce.Extensions;
+using Ecommerce.Helpers;
 using Ecommerce.Models;
 using Ecommerce.Repositories;
 using Ecommerce.ViewModel.Cart;
@@ -12,7 +13,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Security.Claims;
+using System.Text;
+using static Ecommerce.Const.EnumClass;
 
 namespace Ecommerce.Controllers
 {
@@ -72,8 +76,13 @@ namespace Ecommerce.Controllers
             return View(Cart);
         }
         [HttpPost]
-        public async Task<IActionResult> AddItemToCart(string productId)
+        public async Task<IActionResult> AddItemToCart(string productId, int? quantityInput)
         {
+            int quantityOrder = 1;
+            if (quantityInput.HasValue && quantityInput.Value > 0)
+            {
+                quantityOrder = quantityInput.Value;
+            }
             if (User.Identity.IsAuthenticated)
             {
                 var userId = HttpContext.User.Claims.First().Value;
@@ -82,7 +91,7 @@ namespace Ecommerce.Controllers
                 var product = _productRepo.FirstOrDefault(p => p.ProductId == productId);
                 if (product == null || product.Quantity == 0)
                 {
-                    return Json(new { success = false, loginError = false, message = "Sản phẩm đã hết hàng" });
+                    return Json(new { success = false, loginError = false, message = "Out Of Stock" });
                 }
                 var checkItemExist = _cartItemRepo.FirstOrDefault(i => i.ProductId == productId && i.CartId == cartUser.CartId);
                 if (checkItemExist == null)
@@ -92,7 +101,7 @@ namespace Ecommerce.Controllers
                         CartId = cartUser.CartId,
                         ProductId = product.ProductId,
                         ItemSelected = true,
-                        Quantity = 1,
+                        Quantity = quantityOrder,
                         CreatedAt = DateTime.UtcNow,
                         IsActive = true,
                         IsDeleted = false,
@@ -105,7 +114,7 @@ namespace Ecommerce.Controllers
                 }
 
                 await _productRepo.CommitAsync();
-                return Json(new { success = true, loginError = false, message = "Sản phẩm đã được thêm vào giỏ hàng." });
+                return Json(new { success = true, loginError = false, message = "Successfully Add Product." });
             }
             else
             {
@@ -117,21 +126,29 @@ namespace Ecommerce.Controllers
                 productView.ProductImageUrl = productImage.image.ImageUrl;
                 if (product == null || product.Quantity == 0)
                 {
-                    return Json(new { success = false, loginError = false, message = "Sản phẩm đã hết hàng" });
+                    return Json(new { success = false, loginError = false, message = "Out Of Stock" });
                 }
-                var item = new CartItemViewModel
+                var checkItemExist = myCart.FirstOrDefault(i => i.ProductId == productId);
+                if(checkItemExist == null)
                 {
-                    ProductId = product.ProductId,
-                    Quantity = 1,
-                    Product = productView,
-                    ItemSelected = true,
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true,
-                    IsDeleted = false,
-                };
-                myCart.Add(item);
+                    var item = new CartItemViewModel
+                    {
+                        ProductId = product.ProductId,
+                        Quantity = quantityOrder,
+                        Product = productView,
+                        ItemSelected = true,
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true,
+                        IsDeleted = false,
+                    };
+                    myCart.Add(item);
+                }
+                else
+                {
+                    checkItemExist.Quantity++;
+                }
                 HttpContext.Session.Set(MyConst.CartKey, myCart);
-                return Json(new { success = true, loginError = true, message = "Sản phẩm đã được thêm vào giỏ hàng." });
+                return Json(new { success = true, loginError = true, message = "Successfully Add Product." });
             }
         }
         [HttpPost]
@@ -162,7 +179,7 @@ namespace Ecommerce.Controllers
                 quantityItemUpdate.Quantity++;
                 if (quantityItemUpdate.Quantity > quantityAvailable)
                 {
-                    return Json(new { success = false, errorMessage = "Số lượng bạn đặt đã đạt mức tối đa của sản phẩm này" });
+                    return Json(new { success = false, errorMessage = "The Quantity has reached the maximum." });
                 }
                 await _cartItemRepo.CommitAsync();
                 return Json(new { success = true, errorMessage = "" });
@@ -174,7 +191,7 @@ namespace Ecommerce.Controllers
                 quantityItemUpdate.Quantity++;
                 if (quantityItemUpdate.Quantity > quantityAvailable)
                 {
-                    return Json(new { success = false, errorMessage = "Số lượng bạn đặt đã đạt mức tối đa của sản phẩm này" });
+                    return Json(new { success = false, errorMessage = "The Quantity has reached the maximum." });
                 }
                 HttpContext.Session.Set(MyConst.CartKey, myCart);
                 return Json(new { success = true, errorMessage = "" });
@@ -286,7 +303,6 @@ namespace Ecommerce.Controllers
         {
             try
             {
-
                 decimal SubtotalOrder = 0;
                 if (User.Identity.IsAuthenticated)
                 {
@@ -295,15 +311,15 @@ namespace Ecommerce.Controllers
                     var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
                     var ItemOrders = _cartItemRepo.GetItem().Where(i => i.ItemSelected == true && i.CartId == cartUser.CartId)
                                                 .Include(p => p.product).ToList();
-                    string AddressDelivery;
-                    if (model.DeliveryDifferentAddress)
-                    {
-                        AddressDelivery = model.AddressDelivery;
-                    }
-                    else
-                    {
-                        AddressDelivery = user.Address;
-                    }
+                    //string AddressDelivery;
+                    //if (model.DeliveryDifferentAddress)
+                    //{
+                    //    AddressDelivery = model.AddressDelivery;
+                    //}
+                    //else
+                    //{
+                    //    AddressDelivery = user.Address;
+                    //}
                     foreach (var item in ItemOrders)
                     {
                         var price = item.Quantity * item.product.Price;
@@ -317,12 +333,14 @@ namespace Ecommerce.Controllers
                         OrderStatus = 0,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
+                        Email = model.Email,
+                        Phone = model.Phone,
                         Country = model.OrderViewModel.Country,
                         City = model.OrderViewModel.City,
                         State = model.OrderViewModel.State,
                         IsActive = true,
                         UserId = userId,
-                        Address = AddressDelivery,
+                        Address = model.OrderViewModel.Address,
                         TotalPrice = SubtotalOrder,
                     };
                     _orderRepo.Add(newOrder);
@@ -349,6 +367,8 @@ namespace Ecommerce.Controllers
                         var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
                         product.Quantity = product.Quantity - item.Quantity;
                         await _productRepo.CommitAsync();
+                        EmailSenderOrder(newOrder.OrderId);
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 else
@@ -367,12 +387,14 @@ namespace Ecommerce.Controllers
                         OrderStatus = 0,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
+                        Email = model.Email,
+                        Phone = model.Phone,
                         Country = model.OrderViewModel.Country,
                         City = model.OrderViewModel.City,
                         State = model.OrderViewModel.State,
                         IsActive = true,
                         UserId = null,
-                        Address = model.AddressDelivery,
+                        Address = model.OrderViewModel.Address,
                         TotalPrice = SubtotalOrder,
                     };
                     _orderRepo.Add(newOrder);
@@ -393,11 +415,14 @@ namespace Ecommerce.Controllers
                         await _orderItemRepo.CommitAsync();
 
                         //Remove CartItem
-                        myCart.Remove(item);   
+                        myCart.Remove(item);
+                        HttpContext.Session.Set(MyConst.CartKey, myCart);
                         //Cập nhật số lượng hàng trong Kho.
                         var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
                         product.Quantity = product.Quantity - item.Quantity;
                         await _productRepo.CommitAsync();
+                        EmailSenderOrder(newOrder.OrderId);
+                        return RedirectToAction("Index", "Home");
                     }
                 }
             }
@@ -418,6 +443,40 @@ namespace Ecommerce.Controllers
             string[] parts = userId.Split('-');
             string secondPartWithHyphen = parts[1].ToUpper();
             return secondPartWithHyphen;
+        }
+        //Send Email Order
+        private void EmailSenderOrder(string orderId)
+        {
+            EmailSender emailSender = new EmailSender();
+            CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
+            var products = new StringBuilder();
+            var order = _orderRepo.GetItem().Include(x => x.OrderItems).Where(x => x.OrderId == orderId).FirstOrDefault();
+            if (order != null)
+            {
+                foreach (var item in order.OrderItems)
+                {
+                    products.Append(item.product.ProductName);
+                }
+                products.Length -= 3;
+                var status = Enum.GetName(typeof(EnumClass.OrderStatus), OrderStatus.Processing);
+                var PriceDisplay = string.Format(culture, "{0:c}", order.TotalPrice);
+                var pricePay = string.Format(culture, "{0:c}", order.TotalPrice + 6);
+                var subject = "Order Confirmation";
+                string body = $"Dear {order.FirstName},\n\n" +
+                                   $"Order #{order.OrderCode} which you place at our website is successfully created." +
+                                   $"Thank you for your order!\n\n" +
+                                   $"Order Details:\n" +
+                                   $"Product: {products}\n" +
+                                   //$"Quantity: {quantity}\n" +
+                                   $"Total Price of Product: ${PriceDisplay}\n\n" +
+                                   $"Shipping Fee $6" +
+                                   $"Total Payment: {pricePay}" +
+                                   $"Order Status: {status}" + 
+                                   $"We appreciate your business.\n\n" +
+                                   $"Sincerely,\n" +
+                                   $"Your Company Name";
+                emailSender.SendEmail(order.Email, subject, body);
+            }
         }
     }
 }

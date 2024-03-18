@@ -155,6 +155,11 @@ namespace Ecommerce.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -184,6 +189,11 @@ namespace Ecommerce.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -325,10 +335,11 @@ namespace Ecommerce.Migrations
                     b.Property<bool?>("AccountActivated")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<Guid>("ActivateToken")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Avatar")
                         .HasColumnType("longtext");

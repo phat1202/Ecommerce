@@ -50,9 +50,10 @@ namespace Ecommerce.Extensions
             }
             return result;
         }
-        public string ConvertIntoVNDFormat(decimal? money)
+        public string ConvertIntoViewFormat(decimal? money)
         {
-            CultureInfo culture = CultureInfo.GetCultureInfo("vi-VN");
+            //CultureInfo culture = CultureInfo.GetCultureInfo("vi-VN");
+            CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
             return string.Format(culture, "{0:c}", money);
         }
     }

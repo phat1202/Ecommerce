@@ -15,7 +15,8 @@ using static Ecommerce.Const.EnumClass;
 using SendGrid.Helpers.Mail;
 using System.Net.WebSockets;
 using SendGrid.Helpers.Mail.Model;
-using Ecommerce.Extensions.EmailSending;
+using Ecommerce.Helpers;
+using System.Linq;
 
 namespace Ecommerce.Controllers
 {
@@ -34,8 +35,6 @@ namespace Ecommerce.Controllers
         }
         public IActionResult IndexAsync()
         {
-            ActivateAccount();
-            var abc = 2;
             return View();
         }
         public IActionResult Register()
@@ -71,16 +70,17 @@ namespace Ecommerce.Controllers
                         IsActive = true,
                         IsDeleted = false,
                         AccountActivated = false,
+                        ActivateToken = Guid.NewGuid(),
                     };
                     _cartRepo.Add(cartUser);
                     _userRepo.Add(newUser);
                     await _context.SaveChangesAsync();
-
+                    EmailActivateAccount(newUser.Email, newUser.ActivateToken);
                     return RedirectToAction("Login");
                 }
                 else
                 {
-                    model.ErrorMessage = "Có lỗi khi tạo tài khoản";
+                    model.ErrorMessage = "Something goes wrong, please try again.";
                     return View(model);
                 }
             }
@@ -90,14 +90,28 @@ namespace Ecommerce.Controllers
                 throw;
             }
         }
-        private void ActivateAccount()
+
+        //Send Email Confirm
+        private void EmailActivateAccount(string emailUser, Guid token)
         {
-            //var receiver = "dominicculen@gmail.com";
-            //var subject = "Test";
-            //var message = "KKKKK";
-            //await _sendingEmail.SendEmailAsync(receiver, subject, message);
             EmailSender emailSender = new EmailSender();
-            emailSender.SendEmail("dominicculen@gmail.com", "Activate", "KKKKKKKKEEEEEEEE");
+            var user = _userRepo.FirstOrDefault(u => u.Email == emailUser);
+            string activationUrl = $"https://localhost:7063/user/activate?token={token}";
+            var subject = "Account Activation Request";
+            var body = $"Dear {user.FirstName},\n\nPlease click the following link to activate your account:\n\n{activationUrl}\n\nThank you!";
+            emailSender.SendEmail(emailUser, subject, body);
+        }
+        // Confirm Email
+        public async Task<IActionResult> ActivateAsync(string token)
+        {
+            var user = _userRepo.FirstOrDefault(u => u.ActivateToken.ToString().Contains(token));
+            if(user == null || user.AccountActivated == true)
+            {
+                return NotFound("InValid Url");
+            }
+            user.AccountActivated = true;
+            await _userRepo.CommitAsync();
+            return RedirectToAction("Login");
         }
         public IActionResult Login()
         {
@@ -120,7 +134,12 @@ namespace Ecommerce.Controllers
                 var result = await LoginValid(model);
                 if (result == null)
                 {
-                    model.ErrorMessage = "Đăng nhập thất bại";
+                    model.ErrorMessage = "Login Failed";
+                    return View(model);
+                }
+                if(result.AccountActivated == false)
+                {
+                    model.ErrorMessage = "Your Account have not been activated.";
                     return View(model);
                 }
                 var returnUrl = HttpContext.Session.GetString("ReturnUrl");
@@ -143,7 +162,7 @@ namespace Ecommerce.Controllers
             }
             catch (Exception)
             {
-                model.ErrorMessage = "Đăng nhập thất bại";
+                model.ErrorMessage = "Login Failed";
                 return View(model);
             }
         }
@@ -190,6 +209,7 @@ namespace Ecommerce.Controllers
                 Email = user.Email,
                 Gender = user.Gender,
                 Role = user.Role,
+                AccountActivated = user.AccountActivated,
             };
             return userLogin;
         }
@@ -200,6 +220,6 @@ namespace Ecommerce.Controllers
             var returnUrl = HttpContext.Session.GetString("ReturnUrl");
             return RedirectToAction("Login");
         }
-
+        
     }
 }

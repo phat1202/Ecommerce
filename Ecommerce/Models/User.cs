@@ -13,22 +13,20 @@ namespace Ecommerce.Models
         public string? UserId { get; set; }
         [Required]
         public string? Email { get; set; }
-        [Required(ErrorMessage = "Không được để trống")]
+        [Required(ErrorMessage = "You must enter this field")]
         [DataType(DataType.Password)]
-        [MaxLength(255, ErrorMessage = "Không được vượt quá 255 ký tự")]
+        [MaxLength(255, ErrorMessage = "Not over 255 letters")]
         public string? Password { get; set; }
-        [Required(ErrorMessage = "Không được để trống")]
-        [MaxLength(100, ErrorMessage = "Không được vượt quá 255 ký tự")]
+        [Required(ErrorMessage = "You must enter this field")]
+        [MaxLength(100, ErrorMessage = "Not over 100 letters")]
         public string? FirstName { get; set; }
-        [Required(ErrorMessage = "Không được để trống")]
-        [MaxLength(100, ErrorMessage = "Không được vượt quá 255 ký tự")]
+        [Required(ErrorMessage = "You must enter this field")]
+        [MaxLength(100, ErrorMessage = "Not over 100 letters")]
         public string? LastName { get; set; }
         public string? CartId { get; set; }
-        [Required(ErrorMessage = "Không được để trống")]
+        [Required(ErrorMessage = "You must enter this field")]
         [MaxLength(20)]
         public string? Phone { get; set; }
-        [Required]
-        [MaxLength(255)]
         public string? Address { get; set; }
         public Guid UserGuid { get; set; }
         public int? Gender { get; set; }
@@ -36,6 +34,7 @@ namespace Ecommerce.Models
         public int? Role { get; set; }
         public bool? AccountActivated { get; set; }
         public Guid ResetPasswordGuid { get; set; }
+        public Guid ActivateToken { get; set; }
     }
     public class User : BaseUser
     {

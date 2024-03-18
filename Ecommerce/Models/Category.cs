@@ -11,7 +11,7 @@ namespace Ecommerce.Models
         [Key]
         public string? CategoryId { get; set; }
         [Required(ErrorMessage = "Không được để trống")]
-        [MaxLength(255, ErrorMessage = "Không được vượt quá 255 ký tự")]
+        [MaxLength(255, ErrorMessage = "Not over 255 letters")]
         public string? Name { get; set; }
     }
     public class Category : BaseCategory

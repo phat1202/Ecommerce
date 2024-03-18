@@ -21,8 +21,8 @@ namespace Ecommerce.ViewModel.Order
         {
             get
             {
-                CultureInfo culture = CultureInfo.GetCultureInfo("vi-VN");
-                return String.Format(culture, "{0:c}", TotalPrice);
+                CultureInfo culture = CultureInfo.GetCultureInfo("en-US"); 
+                return string.Format(culture, "{0:c}", TotalPrice);
             }
         }
     }

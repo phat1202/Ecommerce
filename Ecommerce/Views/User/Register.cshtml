@@ -65,6 +65,10 @@
                                         <label asp-for="Gender" class="form-label"></label>
                                     </div>
                                 </div>
+                                @if (Model?.ErrorMessage != null)
+                                {
+                                    <p class="text-danger">*@Html.Raw(Model.ErrorMessage)</p>
+                                }
                                 <div class="col-12">
                                     <div class="d-grid">
                                         <button class="btn btn-lg btn-dark rounded-0 fs-6" type="submit">Register</button>
