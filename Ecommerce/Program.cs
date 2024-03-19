@@ -17,6 +17,13 @@ builder.Services.AddAutoMapper(typeof(MappingClass));
 builder.Services.AddTransient<StatsService>();
 builder.Services.AddTransient<EmailSender>();
 builder.Services.AddSingleton<ImageUpLoading>();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromDays(3);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -31,20 +38,14 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromDays(3);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
-builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
-{
-    options.Conventions.AddPageRoute(
-                     "/Home",
-                     "/ChiTietSanPham.html"
-                 );
-});
+//builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
+//{
+//    options.Conventions.AddPageRoute(
+//                     "/Home",
+//                     "/ChiTietSanPham.html"
+//                 );
+//});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

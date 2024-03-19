@@ -421,7 +421,7 @@ namespace Ecommerce.Controllers
                         var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
                         product.Quantity = product.Quantity - item.Quantity;
                         await _productRepo.CommitAsync();
-                        EmailSenderOrder(newOrder.OrderId);
+                        //EmailSenderOrder(newOrder.OrderId);
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -458,7 +458,7 @@ namespace Ecommerce.Controllers
                     products.Append(item.product.ProductName);
                 }
                 products.Length -= 3;
-                var status = Enum.GetName(typeof(EnumClass.OrderStatus), OrderStatus.Processing);
+                var status = Enum.GetName(typeof(EnumClass.OrderStatus), OrderStatus.Pending);
                 var PriceDisplay = string.Format(culture, "{0:c}", order.TotalPrice);
                 var pricePay = string.Format(culture, "{0:c}", order.TotalPrice + 6);
                 var subject = "Order Confirmation";

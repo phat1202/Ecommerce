@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ecommerce.Models;
+using Ecommerce.ViewModel.Cart;
 using Ecommerce.ViewModel.Category;
 using Ecommerce.ViewModel.Product;
 using Microsoft.EntityFrameworkCore;

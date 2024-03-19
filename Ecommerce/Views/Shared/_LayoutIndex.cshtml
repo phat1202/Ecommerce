@@ -87,10 +87,11 @@
                         <i class="fas fa-heart text-primary"></i>
                         <span class="badge">0</span>
                     </a>
-                    <a asp-action="Index" asp-controller="Cart" class="btn border">
+                    @await Component.InvokeAsync("Cart")
+@*                     <a asp-action="Index" asp-controller="Cart" class="btn border">
                         <i class="fas fa-shopping-cart text-primary"></i>
                         <span class="badge">0</span>
-                    </a>
+                    </a> *@
                 </div>
             </div>
         </div>
