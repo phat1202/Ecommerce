@@ -42,7 +42,7 @@ namespace Ecommerce.ViewModel.Product
         {
             get
             {
-                CultureInfo culture = CultureInfo.GetCultureInfo("en-US"); // Change to en-US for dollars
+                CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
                 return string.Format(culture, "{0:c}", Price);
             }
         }

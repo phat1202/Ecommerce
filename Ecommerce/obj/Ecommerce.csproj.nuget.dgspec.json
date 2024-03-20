@@ -78,6 +78,10 @@
               "target": "Package",
               "version": "[2.3.5, )"
             },
+            "PayPal": {
+              "target": "Package",
+              "version": "[1.9.1, )"
+            },
             "SendGrid": {
               "target": "Package",
               "version": "[9.29.2, )"

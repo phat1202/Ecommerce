@@ -72,6 +72,8 @@
 
     <PackageReference Include="MySqlConnector" Version="2.3.5" />
 
+    <PackageReference Include="PayPal" Version="1.9.1" />
+
     <PackageReference Include="SendGrid" Version="9.29.2" />
   </ItemGroup>
 

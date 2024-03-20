@@ -88,6 +88,9 @@ namespace Ecommerce.Migrations
                     b.Property<string>("CategoryId")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("CategoryImageUrl")
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -169,6 +172,9 @@ namespace Ecommerce.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsPaid")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LastName")

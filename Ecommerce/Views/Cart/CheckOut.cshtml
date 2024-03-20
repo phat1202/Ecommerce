@@ -13,40 +13,40 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label>First Name</label>
-                            <input asp-for="FirstName" class="form-control" type="text" placeholder="">
+                            <input asp-for="FirstName" class="form-control" type="text" placeholder="" required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label>Last Name</label>
-                            <input asp-for="LastName" class="form-control" type="text" placeholder="">
+                            <input asp-for="LastName" class="form-control" type="text" placeholder="" required>
                         </div>
 
                         <div class="col-md-6 form-group">
                             <label>Email</label>
-                            <input asp-for="Email" class="form-control" type="text" placeholder="example@email.com">
+                            <input asp-for="Email" class="form-control" type="text" placeholder="example@email.com" required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label>Mobile No</label>
-                            <input asp-for="Phone" class="form-control" type="text" placeholder="+123 456 789">
+                            <input asp-for="Phone" class="form-control" type="text" placeholder="+123 456 789" required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label>Address Line 1</label>
-                            <input asp-for="@Model.OrderViewModel.Address" class="form-control" type="text" placeholder="123 Street">
+                            <input asp-for="@Model.OrderViewModel.Address" class="form-control" type="text" placeholder="123 Street" required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label>Country</label>
-                            <input asp-for="@Model.OrderViewModel.Country" class="form-control" type="text" placeholder="United State">
+                            <input asp-for="@Model.OrderViewModel.Country" class="form-control" type="text" placeholder="United State" required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label>City</label>
-                            <input asp-for="@Model.OrderViewModel.City" class="form-control" type="text" placeholder="New York">
+                            <input asp-for="@Model.OrderViewModel.City" class="form-control" type="text" placeholder="New York" required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label>State</label>
-                            <input asp-for="@Model.OrderViewModel.State" class="form-control" type="text" placeholder="New York">
+                            <input asp-for="@Model.OrderViewModel.State" class="form-control" type="text" placeholder="New York" required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label>ZIP Code</label>
-                            <input class="form-control" type="text" placeholder="123">
+                            <input class="form-control" type="text" placeholder="123" required>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="custom-control custom-checkbox">
@@ -54,11 +54,11 @@
                                 <label class="custom-control-label" for="newaccount">Create an account</label>
                             </div>
                         </div>
-@*                         <div class="col-md-12 form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input asp-for="DeliveryDifferentAddress" type="checkbox" class="custom-control-input" id="shipto">
-                                <label class="custom-control-label" for="shipto" data-toggle="collapse" data-target="#shipping-address">Ship to different address</label>
-                            </div>
+                        @*                         <div class="col-md-12 form-group">
+                        <div class="custom-control custom-checkbox">
+                        <input asp-for="DeliveryDifferentAddress" type="checkbox" class="custom-control-input" id="shipto">
+                        <label class="custom-control-label" for="shipto" data-toggle="collapse" data-target="#shipping-address">Ship to different address</label>
+                        </div>
                         </div> *@
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                         total += (decimal)(item.Quantity * item.Product.Price);
                         <div class="d-flex justify-content-between">
                             <p>
-@*                                 @Html.Raw(item.Product.ProductName.Substring(0, Math.Min(19, item.Product.ProductName.Length)) + "...") *@
+                                @*                                 @Html.Raw(item.Product.ProductName.Substring(0, Math.Min(19, item.Product.ProductName.Length)) + "...") *@
                                 @Html.Raw(item.Product.ProductName)
                             </p>
                             <p>x @item.Quantity</p>
@@ -165,67 +165,69 @@
                 <div class="card-body">
                     <div class="form-group">
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="paypal">
+                            <input type="radio" class="custom-control-input" name="payment" id="paypal" checked>
                             <label class="custom-control-label" for="paypal">Paypal</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                            <label class="custom-control-label" for="directcheck">Direct Check</label>
-                        </div>
-                    </div>
-                    <div class="">
-                        <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                            <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="card-footer border-secondary bg-transparent">
-                    <button id="placeOrderBtn" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
+                    <a id="placeOrderBtn" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">
+                    </a>
                 </div>
+             
+
+
+
 
             </div>
+
         </div>
+        <div id="paypal-button-container" style="max-width:1000px;">av</div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        $("#placeOrderBtn").on("click", function () {
-            $("#orderForm").submit();
+@section checkout{
+
+    <script>
+
+        $(document).ready(function () {
+            $("#placeOrderBtn").on("click", function (event) {
+                event.preventDefault(); 
+                $("#orderForm").submit(); 
+                //window.location.href = "/Cart/PaymentWithPaypal";
+            });
         });
-    });
+        // $(document).ready(function () {
+        //     function toggleRequired() {
+        //         var checkbox = $("#shipto");
+        //         var addressInput = $("#addressLine1");
+        //         if (checkbox.prop("checked")) {
+        //             addressInput.prop("required", true);
+        //         } else {
+        //             addressInput.prop("required", false);
+        //         }
+        //     }
+        //     $("#shipto").on("change", function () {
+        //         toggleRequired();
+        //     });
+        //     $("#placeOrderBtn").on("click", function (e) {
+        //         toggleRequired();
+        //         var checkbox = $("#shipto");
+        //         var addressInput = $("#addressLine1");
+        //         if (checkbox.prop("checked") && addressInput.val() === "") {
 
-    // $(document).ready(function () {
-    //     function toggleRequired() {
-    //         var checkbox = $("#shipto");
-    //         var addressInput = $("#addressLine1");
-    //         if (checkbox.prop("checked")) {
-    //             addressInput.prop("required", true);
-    //         } else {
-    //             addressInput.prop("required", false);
-    //         }
-    //     }
-    //     $("#shipto").on("change", function () {
-    //         toggleRequired();
-    //     });
-    //     $("#placeOrderBtn").on("click", function (e) {
-    //         toggleRequired();
-    //         var checkbox = $("#shipto");
-    //         var addressInput = $("#addressLine1");
-    //         if (checkbox.prop("checked") && addressInput.val() === "") {
+        //             alert("Bạn phải nhập địa chỉ");
+        //             e.preventDefault();
+        //         } else {
 
-    //             alert("Bạn phải nhập địa chỉ");
-    //             e.preventDefault();
-    //         } else {
+        //             $("#orderForm").submit();
+        //         }
+        //     });
+        // });
 
-    //             $("#orderForm").submit();
-    //         }
-    //     });
-    // });
+    </script>
 
-</script>
+
+}
 
 <!-- Checkout End -->

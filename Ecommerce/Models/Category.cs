@@ -13,6 +13,7 @@ namespace Ecommerce.Models
         [Required(ErrorMessage = "Không được để trống")]
         [MaxLength(255, ErrorMessage = "Not over 255 letters")]
         public string? Name { get; set; }
+        public string? CategoryImageUrl { get; set; }
     }
     public class Category : BaseCategory
     {

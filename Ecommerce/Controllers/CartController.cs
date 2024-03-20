@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
 using Ecommerce.Const;
 using Ecommerce.Extensions;
 using Ecommerce.Helpers;
@@ -9,14 +10,20 @@ using Ecommerce.ViewModel.Order;
 using Ecommerce.ViewModel.Product;
 using Ecommerce.ViewModel.User;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Mysqlx.Crud;
+using PayPal.Api;
 using System.Globalization;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Ecommerce.Const.EnumClass;
+using Amount = PayPal.Api.Amount;
+using Payer = PayPal.Api.Payer;
 
 namespace Ecommerce.Controllers
 {
@@ -33,8 +40,11 @@ namespace Ecommerce.Controllers
         private readonly CartItemRepository _cartItemRepo;
         private readonly OrderRepository _orderRepo;
         private readonly OrderItemRepository _orderItemRepo;
+        private readonly PaypalClient _paypalClient;
         private readonly IMapper _mapper;
-        public CartController(EcommerceDbContext context, IMapper mapper)
+        private IHttpContextAccessor _httpContextAccessor;
+        IConfiguration _configuration;
+        public CartController(EcommerceDbContext context, IMapper mapper, PaypalClient paypalClient, IHttpContextAccessor httpContextAccessor, IConfiguration iconfiguration)
         {
             _context = context;
             _mapper = mapper;
@@ -47,6 +57,9 @@ namespace Ecommerce.Controllers
             _cartItemRepo = new CartItemRepository(_context, _mapper);
             _orderRepo = new OrderRepository(_context, _mapper);
             _orderItemRepo = new OrderItemRepository(_context, _mapper);
+            _paypalClient = paypalClient;
+            _httpContextAccessor = httpContextAccessor;
+            _configuration = iconfiguration;
         }
         public List<CartItemViewModel> Cart => HttpContext.Session.Get<List<CartItemViewModel>>(MyConst.CartKey)
                                                 ?? new List<CartItemViewModel>();
@@ -129,7 +142,7 @@ namespace Ecommerce.Controllers
                     return Json(new { success = false, loginError = false, message = "Out Of Stock" });
                 }
                 var checkItemExist = myCart.FirstOrDefault(i => i.ProductId == productId);
-                if(checkItemExist == null)
+                if (checkItemExist == null)
                 {
                     var item = new CartItemViewModel
                     {
@@ -285,6 +298,7 @@ namespace Ecommerce.Controllers
                 var cartItemView = _mapper.Map<List<CartItemViewModel>>(ItemOrders);
                 cartView.CartItems = cartItemView;
                 userView.Cart = cartView;
+                ViewBag.ClientID = _paypalClient.ClientId;
                 return View(userView);
             }
             else
@@ -295,6 +309,7 @@ namespace Ecommerce.Controllers
                 var userView = new UserViewModel();
                 var ItemOrders = Cart.Where(i => i.ItemSelected == true).ToList();
                 userView.Cart = myCart;
+                ViewBag.ClientId = _paypalClient.ClientId;
                 return View(userView);
             }
         }
@@ -367,7 +382,7 @@ namespace Ecommerce.Controllers
                         var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
                         product.Quantity = product.Quantity - item.Quantity;
                         await _productRepo.CommitAsync();
-                        EmailSenderOrder(newOrder.OrderId);
+                        //EmailSenderOrder(newOrder.OrderId);
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -400,7 +415,7 @@ namespace Ecommerce.Controllers
                     _orderRepo.Add(newOrder);
                     await _orderRepo.CommitAsync();
                     //Create OrderItem List
-                    foreach (var item in myCart)
+                    foreach (var item in myCart.ToList())
                     {
                         var orderItems = new OrderItemCrudModel
                         {
@@ -420,10 +435,11 @@ namespace Ecommerce.Controllers
                         //Cập nhật số lượng hàng trong Kho.
                         var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
                         product.Quantity = product.Quantity - item.Quantity;
-                        await _productRepo.CommitAsync();
-                        //EmailSenderOrder(newOrder.OrderId);
-                        return RedirectToAction("Index", "Home");
                     }
+                    await _productRepo.CommitAsync();
+                    //EmailSenderOrder(newOrder.OrderId);
+                    //return RedirectToAction("CreatePaypalOrder", new { orderId = newOrder.OrderId });
+                    return RedirectToAction("PaymentWithPaypal", new { orderId = newOrder.OrderId });
                 }
             }
             catch (Exception)
@@ -432,11 +448,149 @@ namespace Ecommerce.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult Test()
+
+        public ActionResult PaymentWithPaypal(string Cancel = null, string blogId = "", string PayerID = "", string guid = "", string? orderId ="")
         {
-            var order = _context.Orders.First().OrderCode;
-            var data = _orderRepo.GetUserByOrderId(order);
-            return View();
+            var ClientID = _configuration.GetValue<string>("PaypalOptions:AppId");
+            var ClientSecret = _configuration.GetValue<string>("PaypalOptions:AppSecret");
+            var mode = _configuration.GetValue<string>("PaypalOptions:Mode");
+            APIContext apiContext = PaypalConfiguration.GetAPIContext(ClientID, ClientSecret, mode);
+            try
+            {
+                string payerId = PayerID;
+                if (string.IsNullOrEmpty(payerId))
+                {
+                    string baseURI = this.Request.Scheme + "://" + this.Request.Host + "/Cart/PaymentWithPayPal?";
+                    var guidd = Convert.ToString((new Random()).Next(100000));
+                    guid = guidd;
+                    //
+                    var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid, blogId, orderId);
+                    var links = createdPayment.links.GetEnumerator();
+                    string paypalRedirectUrl = null;
+                    while (links.MoveNext())
+                    {
+                        Links lnk = links.Current;
+                        if (lnk.rel.ToLower().Trim().Equals("approval_url"))
+                        {
+                            paypalRedirectUrl = lnk.href;
+                        }
+                    }
+                    _httpContextAccessor.HttpContext.Session.SetString("payment", createdPayment.id);
+                    return Redirect(paypalRedirectUrl);
+                }
+                else
+                {
+                    var paymentId = _httpContextAccessor.HttpContext.Session.GetString("payment");
+                    var executedPayment = ExecutePayment(apiContext, payerId, paymentId as string);
+                    //If executed payment failed then we will show payment failure message to user  
+                    if (executedPayment.state.ToLower() != "approved")
+                    {
+                        return View("PaymentFailed");
+                    }
+                    //
+                    var blogIds = executedPayment.transactions[0].item_list.items[0].sku;
+
+
+                    return View("PaymentSuccess");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View("PaymentFailed");
+            }
+        }
+        private PayPal.Api.Payment payment;
+        private Payment ExecutePayment(APIContext apiContext, string payerId, string paymentId)
+        {
+
+            var paymentExecution = new PaymentExecution()
+            {
+                payer_id = payerId
+            };
+            this.payment = new Payment()
+            {
+                id = paymentId
+            };
+            return this.payment.Execute(apiContext, paymentExecution);
+        }
+        private Payment CreatePayment(APIContext apiContext, string redirectUrl, string blogId, string orderId)
+        {
+            CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
+            var order = _orderRepo.GetItem()
+                .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.product)
+                .FirstOrDefault(x => x.OrderId == orderId);
+            var totalPrice = string.Format(culture, "{0:0.00}", order.TotalPrice);
+            var itemList = new ItemList()
+            {
+                items = new List<Item>(),
+            };
+            //foreach (var x in order.OrderItems)
+            //{
+            //    var item = new Item()
+            //    {
+            //        name = x.product.ProductName,
+            //        currency = "USD",
+            //        quantity = x.Quantity.ToString(),
+            //        price = "29.00",
+            //        sku="asd"
+            //    };
+            //    itemList.items.Add(item);
+            //}
+            foreach(var i in order.OrderItems)
+            {
+                itemList.items.Add(new Item()
+                {
+                    name = i.product.ProductName,
+                    currency = "USD",
+                    price = string.Format(culture, "{0:0.00}", i.product.Price),
+                    quantity = i.Quantity.ToString(),
+                    sku = "asd"
+                });
+            }
+
+            var payer = new Payer()
+            {
+                payment_method = "paypal"
+            };
+            // Configure Redirect Urls here with RedirectUrls object  
+            var redirUrls = new RedirectUrls()
+            {
+                cancel_url = redirectUrl + "&Cancel=true",
+                return_url = redirectUrl
+            };
+            // Adding Tax, shipping and Subtotal details  
+            //var details = new Details()
+            //{
+            //    tax = "1",
+            //    shipping = "1",
+            //    subtotal = "1"
+            //};
+            //Final amount with details  
+            var amount = new Amount()
+            {
+                currency = "USD",
+                total = totalPrice, // Total must be equal to sum of tax, shipping and subtotal.  
+                //details = details
+            };
+            var transactionList = new List<Transaction>();
+            // Adding description about the transaction  
+            transactionList.Add(new Transaction()
+            {
+                description = "Transaction description",
+                invoice_number = Guid.NewGuid().ToString(), //Generate an Invoice No  
+                amount = amount,
+                item_list = itemList
+            });
+            this.payment = new Payment()
+            {
+                intent = "sale",
+                payer = payer,
+                transactions = transactionList,
+                redirect_urls = redirUrls
+            };
+            // Create a payment using a APIContext  
+            return this.payment.Create(apiContext);
         }
         private string GetIdCode(string userId)
         {
@@ -463,15 +617,16 @@ namespace Ecommerce.Controllers
                 var pricePay = string.Format(culture, "{0:c}", order.TotalPrice + 6);
                 var subject = "Order Confirmation";
                 string body = $"Dear {order.FirstName},\n\n" +
-                                   $"Order #{order.OrderCode} which you place at our website is successfully created." +
+                                   $"Order #{order.OrderCode}\n" +
+                                   $" Your order is successfully created.\n" +
                                    $"Thank you for your order!\n\n" +
                                    $"Order Details:\n" +
                                    $"Product: {products}\n" +
                                    //$"Quantity: {quantity}\n" +
-                                   $"Total Price of Product: ${PriceDisplay}\n\n" +
-                                   $"Shipping Fee $6" +
-                                   $"Total Payment: {pricePay}" +
-                                   $"Order Status: {status}" + 
+                                   $"Total Price of Product: {PriceDisplay}\n" +
+                                   $"Shipping Fee $6 \n" +
+                                   $"Total Payment: {pricePay}\n" +
+                                   $"Order Status: {status}\n\n" +
                                    $"We appreciate your business.\n\n" +
                                    $"Sincerely,\n" +
                                    $"Your Company Name";

@@ -1,4 +1,5 @@
 ﻿using Org.BouncyCastle.Bcpg;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -44,6 +45,8 @@ namespace Ecommerce.Models
         [Required(ErrorMessage = "You must enter this field")]
         public string? State { get; set; }
         public string? UserId { get; set; }
+        [DefaultValue(false)]
+        public bool IsPaid { get; set; }
 
     }
     public class Order : BaseOrder

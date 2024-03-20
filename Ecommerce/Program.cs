@@ -12,12 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidCastException("Not");
 builder.Services.AddDbContext<EcommerceDbContext>(options => options.UseMySQL(connectionString));
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(MappingClass));
 builder.Services.AddTransient<StatsService>();
 builder.Services.AddTransient<EmailSender>();
 builder.Services.AddSingleton<ImageUpLoading>();
-
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromDays(3);
@@ -36,7 +36,14 @@ builder.Services.AddAuthentication(options =>
     options.AccessDeniedPath = "/User/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromDays(2);
 });
-builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSingleton(option =>
+    new PaypalClient(
+        builder.Configuration["PayPalOptions:AppId"],
+        builder.Configuration["PayPalOptions:AppSecret"],
+        builder.Configuration["PayPalOptions:Mode"]
+    )
+);
 
 
 //builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
