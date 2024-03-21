@@ -455,7 +455,7 @@ namespace Ecommerce.Controllers
 
         public ActionResult PaymentWithPaypal(string Cancel = null, string blogId = "", string PayerID = "", string guid = "", string? orderId = "")
         {
-           
+
             var checkId = orderId;
             if (string.IsNullOrEmpty(orderId))
             {
@@ -502,7 +502,7 @@ namespace Ecommerce.Controllers
                     //If executed payment failed then we will show payment failure message to user  
                     if (executedPayment.state.ToLower() != "approved")
                     {
-                        return RedirectToAction("OrderHistory", "Order");
+                        return RedirectToAction("HistoryOrder", "Order");
                     }
                     //Change Order
                     order.IsPaid = true;
@@ -510,7 +510,7 @@ namespace Ecommerce.Controllers
                     EmailSenderOrder(order.OrderId);
                     TempData.Clear();
                     var blogIds = executedPayment.transactions[0].item_list.items[0].sku;
-                    return RedirectToAction("OrderHistory", "Order");
+                    return RedirectToAction("HistoryOrder", "Order");
                 }
             }
             catch (Exception ex)
@@ -611,7 +611,7 @@ namespace Ecommerce.Controllers
             {
                 foreach (var item in order.OrderItems)
                 {
-                    products.Append(item.product.ProductName);
+                    products.Append(item.product.ProductName + "+" );
                 }
                 products.Length -= 3;
                 var status = Enum.GetName(typeof(EnumClass.OrderStatus), OrderStatus.Pending);
@@ -633,6 +633,19 @@ namespace Ecommerce.Controllers
                                    $"Sincerely,\n" +
                                    $"Your Company Name";
                 emailSender.SendEmail(order.Email, subject, body);
+                //Thông Báo Có người mua hàng
+                string baseURI = this.Request.Scheme + "://" + this.Request.Host + $"/Manager/OrderStatusManager?orderId={order.OrderId}";
+                var subject_ToAdmin = "Customer Have Just Made a Payment";
+                string body_ToAdmin = $"Name: {order.FirstName} {order.LastName},\n\n" +
+                                   $"Order #{order.OrderCode}\n" +
+                                   $"Product: {products}\n" +
+
+                                   $"Total Price of Product: {PriceDisplay}\n" +
+
+                                   $"Total Payment: {pricePay}\n" +
+                                   $"Order Status: {status}\n\n" +
+                                   $"Click here to check the order: {baseURI}";
+                emailSender.SendEmail("dominicculen@gmail.com", subject_ToAdmin, body_ToAdmin);
             }
         }
     }

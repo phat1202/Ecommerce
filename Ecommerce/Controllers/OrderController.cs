@@ -44,7 +44,7 @@ namespace Ecommerce.Controllers
         {
             return View();
         }
-        public IActionResult HistoryOrder()
+        public IActionResult HistoryOrder(string? searchbyCode)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -55,7 +55,7 @@ namespace Ecommerce.Controllers
                 var orders = _orderRepo.GetItem()
                     .Include(i => i.user)
                     .Include(i => i.OrderItems).ThenInclude(i => i.product)
-                    .Where(o => o.UserId == userId).ToList();
+                    .Where(o => o.UserId == userId).ToList().OrderByDescending(i => i.CreatedAt);
 
                 var ordersViewModel = _mapper.Map<List<OrderViewModel>>(orders);
                 foreach (var i in ordersViewModel)
@@ -68,7 +68,15 @@ namespace Ecommerce.Controllers
                 }
                 return View(ordersViewModel);
             }
-            return RedirectToAction("Index", "Home");
+            else
+            {
+                var orders = _orderRepo.GetItem()
+                                   .Include(i => i.user)
+                                   .Include(i => i.OrderItems).ThenInclude(i => i.product)
+                                   .Where(i => i.OrderCode == searchbyCode).ToList();
+                var result = new List<OrderViewModel>();
+                return View(result);
+            }
         }
         public IActionResult DetailOrder(string orderId)
         {

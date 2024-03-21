@@ -1,20 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\const\\enumclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\const\\enumclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 1,
@@ -22,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 118,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -35,45 +22,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EnumClass.cs",
-              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Const\\EnumClass.cs",
-              "RelativeDocumentMoniker": "Ecommerce\\Const\\EnumClass.cs",
-              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Const\\EnumClass.cs",
-              "RelativeToolTip": "Ecommerce\\Const\\EnumClass.cs",
-              "ViewState": "AQIAAA0AAAAAAAAAAAAQwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-21T09:00:51.749Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "OrderController.cs",
-              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Controllers\\OrderController.cs",
-              "RelativeDocumentMoniker": "Ecommerce\\Controllers\\OrderController.cs",
-              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Controllers\\OrderController.cs",
-              "RelativeToolTip": "Ecommerce\\Controllers\\OrderController.cs",
-              "ViewState": "AQIAAC0AAAAAAAAAAAAYwC4AAAAeAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-21T08:52:31.95Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CartController.cs",
-              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Controllers\\CartController.cs",
-              "RelativeDocumentMoniker": "Ecommerce\\Controllers\\CartController.cs",
-              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Controllers\\CartController.cs",
-              "RelativeToolTip": "Ecommerce\\Controllers\\CartController.cs",
-              "ViewState": "AQIAAOUBAAAAAAAAAAAlwP8BAAAUAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-21T07:32:36.248Z",
-              "EditorCaption": ""
             }
           ]
         }

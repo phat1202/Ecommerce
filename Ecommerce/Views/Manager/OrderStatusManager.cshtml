@@ -1,0 +1,79 @@
+﻿@model Ecommerce.ViewModel.Order.OrderCrudModel
+@{
+    Layout = "~/Views/Shared/_LayoutCrudModel.cshtml";
+
+}
+<form asp-action="OrderStatusManager" class="form-horizontal">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="OrderId" class="myElement" onkeydown="javascript: return ['Backspace','Delete','ArrowRight']
+                                        .includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'"
+           class="form-control" />
+    <fieldset>
+        <!-- Form Name -->
+        <legend>UPDATE ORDER STATUS</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">Title</label>
+            <div class="col-md-4">
+
+                <input asp-for="OrderTitle" class="form-control input-md" required="" disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">Email</label>
+            <div class="col-md-4">
+
+                <input asp-for="Email" class="form-control input-md" required="" disabled>
+            </div>
+        </div>        
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">First Name</label>
+            <div class="col-md-4">
+                <input asp-for="FirstName" class="form-control input-md" required="" disabled>
+            </div>
+        </div>
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">Last Name</label>
+            <div class="col-md-4">
+                <input asp-for="LastName"  class="form-control input-md" required="" disabled>
+            </div>
+        </div>
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_categorie">Change Status</label>
+            <div class="col-md-4">
+                <select asp-for="OrderStatus" asp-items="ViewBag.OrderStatus" class="form-control">
+                </select>
+            </div>
+        </div>
+
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">PRICE</label>
+            <div class="col-md-4">
+                <input asp-for="TotalPrice" type="number" class="form-control input-md" required="" disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">CREATED DATE</label>
+            <div class="col-md-4">
+                <input asp-for="CreatedAt" readonly class="form-control input-md" required="" disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">UPDATE AT</label>
+            <div class="col-md-4">
+                <input asp-for="UpdatedAt" readonly class="form-control input-md" disabled></input>
+            </div>
+        </div>
+        <div class="container mx-auto text-center">
+            <input type="submit" value="Update" class="btn btn-danger" /> |
+          
+        </div>
+    </fieldset>
+    <br />
+</form>

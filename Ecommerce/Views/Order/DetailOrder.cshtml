@@ -33,15 +33,15 @@
                     <div class="payment-details">
                         <div class="row">
                             <div class="col-sm-6">
-                                <span>Khách hàng</span>
+                                <span>Client</span>
                                 <strong>
                                     @Model.Customer.FirstName @Model.Customer.LastName
                                 </strong>
                                 <p>
                                     @Model.Address <br>
-                                    City of monterrey <br>
-                                    55839 <br>
-                                    USA <br>
+                                    @Model.City <br>
+                                    99999 <br>
+                                    @Model.Country <br>
                                     <a href="#">
                                         @Model.Customer.Email
                                     </a>
@@ -50,7 +50,7 @@
                             <div class="col-sm-6 text-right">
                                 <span>Payment To</span>
                                 <strong>
-                                   Truong Tan Phat
+                                    Truong Tan Phat
                                 </strong>
                                 <p>
                                     344 9th Avenue <br>
@@ -68,63 +68,36 @@
                     <div class="line-items">
                         <div class="headers clearfix">
                             <div class="row">
-
                                 <div class="col-xs-4">Description</div>
-                                <div class="col-xs-3">Quantity</div>          
+                                <div class="col-xs-5">Unit Price</div>
+                                <div class="col-xs-3">Quantity</div>
                                 <div class="col-xs-5 text-right">Amount</div>
                             </div>
                         </div>
 
                         <div class="items">
-                            @foreach(var item in Model.OrderItems)
+                            @foreach (var item in Model.OrderItems)
                             {
                                 var totalOfProduct = item.Quantity * item.Price;
                                 total += (decimal)totalOfProduct;
                                 <div class="row item">
                                     <div class="col-xs-4 desc">
-                                       @item.product.ProductName
+                                        <a asp-action="ProductDetail" asp-controller="Home" asp-route-productId="@item.ProductId">
+                                            @item.product.ProductName
+                                        </a>
+                                    </div>
+
+                                    <div class="col-xs-3 qty">
+                                        @item.product.PriceDisplay
                                     </div>
                                     <div class="col-xs-3 qty">
                                         @item.Quantity
                                     </div>
                                     <div class="col-xs-5 amount text-right">
-                                        @item.product.PriceDisplay
+                                        @item.TotalPriceOfProduct
                                     </div>
                                 </div>
                             }
-                            <div class="row item">
-                                <div class="col-xs-4 desc">
-                                    Html theme
-                                </div>
-                                <div class="col-xs-3 qty">
-                                    3
-                                </div>
-                                <div class="col-xs-5 amount text-right">
-                                    $60.00
-                                </div>
-                            </div>
-                            <div class="row item">
-                                <div class="col-xs-4 desc">
-                                   Áo sơ mi tay ngắn EVISU
-                                </div>
-                                <div class="col-xs-3 qty">
-                                    1
-                                </div>
-                                <div class="col-xs-5 amount text-right">
-                                    $20.00
-                                </div>
-                            </div>
-                            <div class="row item">
-                                <div class="col-xs-4 desc">
-                                    Snippets on bootdey
-                                </div>
-                                <div class="col-xs-3 qty">
-                                    2
-                                </div>
-                                <div class="col-xs-5 amount text-right">
-                                    $18.00
-                                </div>
-                            </div>
                         </div>
 
                         <div class="total text-right">
@@ -139,24 +112,26 @@
                             <div class="field">
                                 Shipping <span>$0.00</span>
                             </div>
-                            <div class="field">
+@*                             <div class="field">
                                 Discount <span>4.5%</span>
-                            </div>
+                            </div> *@
                             <div class="field grand-total">
                                 Total <span>@_statsService.ConvertIntoViewFormat(total)</span>
                             </div>
                         </div>
 
                         <div class="print">
-                            <a asp-action="GeneratePDF" asp-controller="EndUser" asp-route-orderId="@Model.OrderId" >
+                            <a asp-action="GeneratePDF" asp-controller="EndUser" asp-route-orderId="@Model.OrderId">
                                 <i class="fa fa-print"></i>
                                 Print this receipt
                             </a>
                         </div>
-
                     </div>
-                </div>
+
+                </div>     
+                <br />
             </div>
         </div>
     </div>
-</div>        
+</div>
+

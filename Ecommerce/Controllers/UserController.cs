@@ -218,7 +218,7 @@ namespace Ecommerce.Controllers
             HttpContext.Session.SetString("ReturnUrl", Request.Headers["Referer"].ToString());
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             var returnUrl = HttpContext.Session.GetString("ReturnUrl");
-            return RedirectToAction("Login");
+            return Redirect(returnUrl);
         }
         
     }
