@@ -2,6 +2,7 @@
 @{
     var number = 0;
 }
+
 <body>
     <div class="container-xl">
         <div class="table-responsive">
@@ -9,21 +10,23 @@
                 <div class="table-title">
                     <div class="row">
                         <div class="col-sm-5">
-                            <h2>Lịch sử <b>đơn hàng </b></h2>
+                            <h2>Order <b>History</b></h2>
                         </div>
 
                     </div>
                 </div>
                 <table class="table table-striped table-hover">
                     <thead>
-                        <tr>
+                        <tr >
                             <th>#</th>
-                            <th>Mã đơn hàng</th>
-                            <th>Sản phẩm</th>
-                            <th>Ngày Tạo Đơn</th>
-                            <th>Tổng tiền</th>
-                            <th>Trạng Thái</th>
-                            <th></th>
+                            <th>Code</th>
+                            <th>Product</th>
+                            <th>Order Date</th>
+                            <th>Total</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>#</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -33,17 +36,28 @@
                             {
                                 <tr>
                                     <td>@(++number)</td>
-                                    @foreach (var p in item.OrderItems)
+@*                                     @foreach (var p in item.OrderItems)
                                     {
                                         <td><img src="@p.product.ProductImageUrl" class="avatarOrderHistory" alt="" /></td>
-                                    }
+                                    } *@
+                                    <td>@item.OrderCode</td>
                                     <td>@item.OrderTitle</td>
                                     <td>@item.CreatedAtDisplay</td>
-                                    <td>@item.TotalPrice</td>
+                                    <td>@item.TotalPriceDisplay</td>
+                                    @if (item.IsPaid)
+                                    {
+                                        <td>Ok</td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <a asp-action="PaymentWithPaypal" asp-controller="Cart" asp-route-orderId="@item.OrderId">(Unpaid) Click to Complete Payment</a>
+                                        </td>
+                                    }
                                     <td>@item.StatusOrder</td>
                                     <td>
                                         <a asp-action="DetailOrder" asp-controller="EndUser" asp-route-orderId="@item.OrderId">
-                                            Chi Tiết
+                                            Detail
                                         </a>
                                     </td>
                                 </tr>

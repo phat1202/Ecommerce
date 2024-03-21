@@ -3,5 +3,6 @@
     public class MyConst
     {
         public static string CartKey = "MYGIOHANGKEKEKE";
+        public static string PreviousCartKey = "MYCASTKEKEKE";
     }
 }

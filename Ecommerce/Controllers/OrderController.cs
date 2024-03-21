@@ -44,7 +44,6 @@ namespace Ecommerce.Controllers
         {
             return View();
         }
-        [Authorize]
         public IActionResult HistoryOrder()
         {
             if (User.Identity.IsAuthenticated)
@@ -86,6 +85,6 @@ namespace Ecommerce.Controllers
             ordersViewModel.Customer = userView;
             return View(ordersViewModel);
         }
-       
+
     }
 }

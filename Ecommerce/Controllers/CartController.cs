@@ -284,6 +284,13 @@ namespace Ecommerce.Controllers
         }
         public IActionResult CheckOut()
         {
+            if (TempData["RedirectedToSpecificAction"] != null && (bool)TempData["RedirectedToSpecificAction"])
+            {
+                // Clear the flag
+                TempData["RedirectedToSpecificAction"] = false;
+                // Redirect the user to SpecificAction again
+                return RedirectToAction("HistoryOrder", "Order");
+            }
             if (User.Identity.IsAuthenticated)
             {
                 var userId = HttpContext.User.Claims.First().Value;
@@ -326,15 +333,6 @@ namespace Ecommerce.Controllers
                     var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
                     var ItemOrders = _cartItemRepo.GetItem().Where(i => i.ItemSelected == true && i.CartId == cartUser.CartId)
                                                 .Include(p => p.product).ToList();
-                    //string AddressDelivery;
-                    //if (model.DeliveryDifferentAddress)
-                    //{
-                    //    AddressDelivery = model.AddressDelivery;
-                    //}
-                    //else
-                    //{
-                    //    AddressDelivery = user.Address;
-                    //}
                     foreach (var item in ItemOrders)
                     {
                         var price = item.Quantity * item.product.Price;
@@ -343,7 +341,7 @@ namespace Ecommerce.Controllers
                     var newOrder = new OrderCrudModel
                     {
                         OrderTitle = ItemOrders.FirstOrDefault().product.ProductName,
-                        OrderCode = "ORD" + DateTime.Now.Date.Ticks + GetIdCode(userId),
+                        OrderCode = "ORD" + DateTime.Now.Ticks + GetIdCode(userId),
                         CreatedAt = DateTime.Now,
                         OrderStatus = 0,
                         FirstName = model.FirstName,
@@ -357,6 +355,7 @@ namespace Ecommerce.Controllers
                         UserId = userId,
                         Address = model.OrderViewModel.Address,
                         TotalPrice = SubtotalOrder,
+                        IsPaid = false,
                     };
                     _orderRepo.Add(newOrder);
                     await _orderRepo.CommitAsync();
@@ -375,16 +374,19 @@ namespace Ecommerce.Controllers
                         _orderItemRepo.Add(orderItems);
                         await _orderItemRepo.CommitAsync();
 
-                        //Remove CartItem
+                        //Remove CartItem 
                         _cartItemRepo.Delete(item);
+
                         await _cartItemRepo.CommitAsync();
                         //Cập nhật số lượng hàng trong Kho.
                         var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
                         product.Quantity = product.Quantity - item.Quantity;
                         await _productRepo.CommitAsync();
                         //EmailSenderOrder(newOrder.OrderId);
-                        return RedirectToAction("Index", "Home");
+                        //return RedirectToAction("Index", "Home");
                     }
+                    TempData["RedirectedToSpecificAction"] = true;
+                    return RedirectToAction("PaymentWithPaypal", new { orderId = newOrder.OrderId });
                 }
                 else
                 {
@@ -397,7 +399,7 @@ namespace Ecommerce.Controllers
                     var newOrder = new OrderCrudModel
                     {
                         OrderTitle = myCart.FirstOrDefault().Product.ProductName,
-                        OrderCode = "ORD" + DateTime.Now.Date.Ticks + "NLGY",
+                        OrderCode = "ORD" + DateTime.Now.Ticks + "NLGY",
                         CreatedAt = DateTime.Now,
                         OrderStatus = 0,
                         FirstName = model.FirstName,
@@ -411,6 +413,7 @@ namespace Ecommerce.Controllers
                         UserId = null,
                         Address = model.OrderViewModel.Address,
                         TotalPrice = SubtotalOrder,
+                        IsPaid = false,
                     };
                     _orderRepo.Add(newOrder);
                     await _orderRepo.CommitAsync();
@@ -429,9 +432,10 @@ namespace Ecommerce.Controllers
                         _orderItemRepo.Add(orderItems);
                         await _orderItemRepo.CommitAsync();
 
-                        //Remove CartItem
+                        //Remove CartItem && 
                         myCart.Remove(item);
                         HttpContext.Session.Set(MyConst.CartKey, myCart);
+
                         //Cập nhật số lượng hàng trong Kho.
                         var product = _productRepo.FirstOrDefault(p => p.ProductId == item.ProductId);
                         product.Quantity = product.Quantity - item.Quantity;
@@ -439,6 +443,7 @@ namespace Ecommerce.Controllers
                     await _productRepo.CommitAsync();
                     //EmailSenderOrder(newOrder.OrderId);
                     //return RedirectToAction("CreatePaypalOrder", new { orderId = newOrder.OrderId });
+                    TempData["RedirectedToSpecificAction"] = true;
                     return RedirectToAction("PaymentWithPaypal", new { orderId = newOrder.OrderId });
                 }
             }
@@ -446,14 +451,25 @@ namespace Ecommerce.Controllers
             {
                 throw;
             }
-            return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult PaymentWithPaypal(string Cancel = null, string blogId = "", string PayerID = "", string guid = "", string? orderId ="")
+        public ActionResult PaymentWithPaypal(string Cancel = null, string blogId = "", string PayerID = "", string guid = "", string? orderId = "")
         {
+           
+            var checkId = orderId;
+            if (string.IsNullOrEmpty(orderId))
+            {
+                checkId = (string)TempData["OrderId"].ToString();
+            }
+            //var order = new Models.Order();
+            var order = _orderRepo.GetItem()
+                .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.product)
+                .FirstOrDefault(x => x.OrderId == checkId);
             var ClientID = _configuration.GetValue<string>("PaypalOptions:AppId");
             var ClientSecret = _configuration.GetValue<string>("PaypalOptions:AppSecret");
             var mode = _configuration.GetValue<string>("PaypalOptions:Mode");
+            TempData["Id"] = orderId;
             APIContext apiContext = PaypalConfiguration.GetAPIContext(ClientID, ClientSecret, mode);
             try
             {
@@ -464,7 +480,7 @@ namespace Ecommerce.Controllers
                     var guidd = Convert.ToString((new Random()).Next(100000));
                     guid = guidd;
                     //
-                    var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid, blogId, orderId);
+                    var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid, blogId, order);
                     var links = createdPayment.links.GetEnumerator();
                     string paypalRedirectUrl = null;
                     while (links.MoveNext())
@@ -476,6 +492,7 @@ namespace Ecommerce.Controllers
                         }
                     }
                     _httpContextAccessor.HttpContext.Session.SetString("payment", createdPayment.id);
+                    TempData["OrderId"] = order.OrderId.ToString();
                     return Redirect(paypalRedirectUrl);
                 }
                 else
@@ -485,13 +502,15 @@ namespace Ecommerce.Controllers
                     //If executed payment failed then we will show payment failure message to user  
                     if (executedPayment.state.ToLower() != "approved")
                     {
-                        return View("PaymentFailed");
+                        return RedirectToAction("OrderHistory", "Order");
                     }
-                    //
+                    //Change Order
+                    order.IsPaid = true;
+                    _context.SaveChanges();
+                    EmailSenderOrder(order.OrderId);
+                    TempData.Clear();
                     var blogIds = executedPayment.transactions[0].item_list.items[0].sku;
-
-
-                    return View("PaymentSuccess");
+                    return RedirectToAction("OrderHistory", "Order");
                 }
             }
             catch (Exception ex)
@@ -513,31 +532,15 @@ namespace Ecommerce.Controllers
             };
             return this.payment.Execute(apiContext, paymentExecution);
         }
-        private Payment CreatePayment(APIContext apiContext, string redirectUrl, string blogId, string orderId)
+        private Payment CreatePayment(APIContext apiContext, string redirectUrl, string blogId, Models.Order order)
         {
             CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
-            var order = _orderRepo.GetItem()
-                .Include(x => x.OrderItems)
-                    .ThenInclude(x => x.product)
-                .FirstOrDefault(x => x.OrderId == orderId);
             var totalPrice = string.Format(culture, "{0:0.00}", order.TotalPrice);
             var itemList = new ItemList()
             {
                 items = new List<Item>(),
             };
-            //foreach (var x in order.OrderItems)
-            //{
-            //    var item = new Item()
-            //    {
-            //        name = x.product.ProductName,
-            //        currency = "USD",
-            //        quantity = x.Quantity.ToString(),
-            //        price = "29.00",
-            //        sku="asd"
-            //    };
-            //    itemList.items.Add(item);
-            //}
-            foreach(var i in order.OrderItems)
+            foreach (var i in order.OrderItems)
             {
                 itemList.items.Add(new Item()
                 {
@@ -548,7 +551,6 @@ namespace Ecommerce.Controllers
                     sku = "asd"
                 });
             }
-
             var payer = new Payer()
             {
                 payment_method = "paypal"
@@ -577,7 +579,7 @@ namespace Ecommerce.Controllers
             // Adding description about the transaction  
             transactionList.Add(new Transaction()
             {
-                description = "Transaction description",
+                description = order.OrderTitle.ToString(), //De
                 invoice_number = Guid.NewGuid().ToString(), //Generate an Invoice No  
                 amount = amount,
                 item_list = itemList
