@@ -5,6 +5,7 @@ using Ecommerce.Repositories;
 using Ecommerce.ViewModel.Category;
 using Ecommerce.ViewModel.Image;
 using Ecommerce.ViewModel.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Evaluation;
@@ -15,6 +16,7 @@ using NuGet.DependencyResolver;
 
 namespace Ecommerce.Controllers
 {
+    [Authorize(Policy = "Manager")]
     public class ProductController : Controller
     {
         private readonly ProductRepository _productRepo;

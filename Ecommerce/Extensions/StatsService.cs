@@ -17,9 +17,15 @@ namespace Ecommerce.Extensions
             _context = context;
             _mapper = mapper;
         }
-        public List<Category> GetAllCategories()
+        public List<CategoryViewModel> GetAllCategories()
         {
-            return _context.Set<Category>().OrderBy(item => item.Name).ToList();
+            var data =  _context.Set<Category>().OrderBy(item => item.Name).ToList();
+            return _mapper.Map<List<CategoryViewModel>>(data);
+        }
+        public int GetCount(string categoryId)
+        {
+            var data = _context.Set<Product>().Count(p => p.CategoryId == categoryId);
+            return data;
         }
         public CategoryViewModel GetCategoryByProduct(string productId)
         {

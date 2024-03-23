@@ -17,6 +17,11 @@ using System.Net.WebSockets;
 using SendGrid.Helpers.Mail.Model;
 using Ecommerce.Helpers;
 using System.Linq;
+using SendGrid;
+using System.Text;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Ecommerce.Controllers
 {
@@ -25,13 +30,15 @@ namespace Ecommerce.Controllers
         private readonly EcommerceDbContext _context;
         private readonly UserRepository _userRepo;
         private readonly CartRepository _cartRepo;
+        private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper;
-        public UserController(EcommerceDbContext context, IMapper mapper)
+        public UserController(EcommerceDbContext context, IMapper mapper, IWebHostEnvironment env)
         {
             _context = context;
             _mapper = mapper;
             _userRepo = new UserRepository(_context, _mapper);
             _cartRepo = new CartRepository(_context, _mapper);
+            _env = env;
         }
         public IActionResult IndexAsync()
         {
@@ -53,6 +60,12 @@ namespace Ecommerce.Controllers
                     {
                         return View(userExisting);
                     }
+                    var strongPass = IsStrongPassword(model.Password);
+                    if (!strongPass)
+                    {
+                        model.ErrorMessage = "Password must contain at least one number, and one special characters.";
+                        return View(model);
+                    }
                     var cartUser = new CartCrudModel
                     {
                         TotalPrice = 0,
@@ -71,6 +84,7 @@ namespace Ecommerce.Controllers
                         IsDeleted = false,
                         AccountActivated = false,
                         ActivateToken = Guid.NewGuid(),
+                        ResetPasswordGuid = Guid.NewGuid(),
                     };
                     _cartRepo.Add(cartUser);
                     _userRepo.Add(newUser);
@@ -86,20 +100,32 @@ namespace Ecommerce.Controllers
             }
             catch (Exception)
             {
-
-                throw;
+                model.ErrorMessage = "Something goes wrong, please try again.";
+                return View(model);
             }
         }
-
+        static bool IsStrongPassword(string passwd)
+        {
+            if (passwd.Length < 8)
+                return false;
+            if (!passwd.Any(char.IsUpper) || !passwd.Any(char.IsLower) || passwd.Contains(" "))
+                return false;
+            if (!passwd.Any(char.IsDigit))
+                return false;
+            string specialCharacters = @"%!@#$%^&*()?/>.<,:;'\|}]{[_~`+=-""";
+            if (!passwd.Any(ch => specialCharacters.Contains(ch)))
+                return false;
+            return true;
+        }
         //Send Email Confirm
         private void EmailActivateAccount(string emailUser, Guid token)
         {
             EmailSender emailSender = new EmailSender();
             var user = _userRepo.FirstOrDefault(u => u.Email == emailUser);
-            string activationUrl = $"https://localhost:7063/user/activate?token={token}";
+            string activationUrl = this.Request.Scheme + "://" + this.Request.Host + $"/User/Activate?token={token}";
             var subject = "Account Activation Request";
             var body = $"Dear {user.FirstName},\n\nPlease click the following link to activate your account:\n\n{activationUrl}\n\nThank you!";
-            emailSender.SendEmail(emailUser, subject, body);
+            emailSender.SendEmail(emailUser, subject, body, false);
         }
         // Confirm Email
         public async Task<IActionResult> ActivateAsync(string token)
@@ -220,6 +246,92 @@ namespace Ecommerce.Controllers
             var returnUrl = HttpContext.Session.GetString("ReturnUrl");
             return Redirect(returnUrl);
         }
-        
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(string email)
+        {
+            var errorModel = new ErrorViewModel();
+            try
+            {
+                //Find User
+                var user = _userRepo.FirstOrDefault(x => x.Email == email);
+                if (user == null)
+                {
+                    errorModel.ErrorMessage = "Email doesn't exist.";
+                    return View(errorModel);
+                }
+                var guid = user.ResetPasswordGuid;
+                //Config Email
+                string baseURI = this.Request.Scheme + "://" + this.Request.Host + $"/User/UpdatePassword?guid={guid}";
+                var webRoot = _env.WebRootPath;
+                var resetPassword = Path.Combine(webRoot, "template/resetpassword/resetpassword.html");
+                var subject = "RESET PASSWORD";
+                var emailBody = System.IO.File.ReadAllText(resetPassword);
+                emailBody = emailBody.Replace("{{urlReset}}", baseURI);
+                emailBody = emailBody.Replace("{{userName}}", user.FirstName);
+
+                //Send Email
+                EmailSender emailSender = new EmailSender();
+                string receiverAddress = user.Email!.Trim();
+                var plainTextContent = emailBody;
+                var htmlContent = emailBody;
+                emailSender.SendEmail(receiverAddress, subject, plainTextContent, true);
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return View("Sucess");
+            }
+            catch (Exception)
+            {
+                errorModel.ErrorMessage = "Something went wrong when sending email";
+                return View("Error", errorModel);
+            }
+        }
+        //Update new Password via Email sender
+        public async Task<IActionResult> UpdatePassword(Guid guid)
+        {
+            try
+            {
+                var user = _userRepo.FirstOrDefault(x => x.ResetPasswordGuid == guid);
+                if (user == null)
+                {
+                    return RedirectToAction("AccessDenied");
+                }
+                var data = new ResetPasswordModel
+                {
+                    UserId = user.UserId,
+                    NewPassword = null,
+                };
+                user.ResetPasswordGuid = Guid.NewGuid();
+                await _userRepo.CommitAsync();
+                return View(data);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Login");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(ResetPasswordModel model)
+        {
+            try
+            {            
+                //Find user
+                var user = _userRepo.FirstOrDefault(x => x.UserId == model.UserId);
+                user.Password = model.NewPassword.Hash();
+                await _userRepo.CommitAsync();
+                return RedirectToAction("Login");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Login");
+            }
+        }
+
     }
 }

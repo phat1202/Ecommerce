@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Ecommerce.Const;
+using Ecommerce.Extensions;
 using Ecommerce.Helpers;
 using Ecommerce.Models;
 using Ecommerce.Repositories;
+using Ecommerce.ViewModel.Cart;
 using Ecommerce.ViewModel.Order;
 using Ecommerce.ViewModel.User;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,8 +48,10 @@ namespace Ecommerce.Controllers
         {
             return View();
         }
-        public IActionResult HistoryOrder(string? searchbyCode)
+
+        public IActionResult HistoryOrder()
         {
+            var result = new List<OrderViewModel>();
             if (User.Identity.IsAuthenticated)
             {
                 var userId = HttpContext.User.Claims.First().Value;
@@ -70,28 +76,35 @@ namespace Ecommerce.Controllers
             }
             else
             {
-                var orders = _orderRepo.GetItem()
-                                   .Include(i => i.user)
-                                   .Include(i => i.OrderItems).ThenInclude(i => i.product)
-                                   .Where(i => i.OrderCode == searchbyCode).ToList();
-                var result = new List<OrderViewModel>();
+                var data = HttpContext.Session.Get<OrderViewModel>(MyConst.OrderView)
+                                ?? new OrderViewModel();
+                result.Add(data);
                 return View(result);
             }
         }
         public IActionResult DetailOrder(string orderId)
         {
-            var userId = HttpContext.User.Claims.First().Value;
-            var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
-            var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
-            var cartItems = _cartItemRepo.GetItem().Where(i => i.CartId == user.CartId).Include(c => c.cart).ToList();
-            var orders = _orderRepo.GetItem()
-                .Include(i => i.user)
-                .Include(i => i.OrderItems).ThenInclude(i => i.product)
-                .Where(o => o.OrderId == orderId).First();
-            var ordersViewModel = _mapper.Map<OrderViewModel>(orders);
-            var userView = _mapper.Map<UserViewModel>(user);
-            ordersViewModel.Customer = userView;
-            return View(ordersViewModel);
+            try
+            {
+                //var userId = HttpContext.User.Claims.First().Value;
+                //var user = _userRepo.FirstOrDefault(u => u.UserId == userId);
+                //var cartUser = _cartRepo.FirstOrDefault(c => c.CartId == user.CartId);
+                //var cartItems = _cartItemRepo.GetItem().Where(i => i.CartId == user.CartId).Include(c => c.cart).ToList();
+                var orders = _orderRepo.GetItem()
+                    .Include(i => i.user)
+                    .Include(i => i.OrderItems).ThenInclude(i => i.product)
+                    .Where(o => o.OrderId == orderId).First();
+                var ordersViewModel = _mapper.Map<OrderViewModel>(orders);
+                //var userView = _mapper.Map<UserViewModel>(user);
+                //ordersViewModel.Customer = userView;
+                return View(ordersViewModel);
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("HistoryOrder");
+            }
+
         }
 
     }

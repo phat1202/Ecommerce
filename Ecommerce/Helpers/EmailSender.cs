@@ -6,7 +6,7 @@ namespace Ecommerce.Helpers
 {
     public class EmailSender
     {
-        public void SendEmail(string email, string subject, string body)
+        public void SendEmail(string email, string subject, string body, bool html)
         {
             var sender = "trg.tanphat@gmail.com";
             var pass = "cssqoxvjcgocjqem";
@@ -17,13 +17,13 @@ namespace Ecommerce.Helpers
                     client.Port = 587;
                     client.Credentials = new NetworkCredential(sender, pass);
                     client.EnableSsl = true;
-
+                    
                     MailMessage message = new MailMessage();
                     message.From = new MailAddress(sender);
                     message.To.Add(email);
                     message.Subject = subject;
                     message.Body = body;
-
+                    message.IsBodyHtml = html;
                     client.Send(message);
                     Console.WriteLine("Email sent successfully!");
                 }

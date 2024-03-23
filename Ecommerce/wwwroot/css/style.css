@@ -52,7 +52,9 @@ html {
 article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
   display: block;
 }
-
+.myElement {
+    display: none;
+}
 
 body {
   margin: 0;

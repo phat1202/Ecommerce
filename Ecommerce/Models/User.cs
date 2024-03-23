@@ -15,6 +15,7 @@ namespace Ecommerce.Models
         public string? Email { get; set; }
         [Required(ErrorMessage = "You must enter this field")]
         [DataType(DataType.Password)]
+        //[RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]+$", ErrorMessage = "*Password must contain at least one number, and one special characters.")]
         [MaxLength(255, ErrorMessage = "Not over 255 letters")]
         public string? Password { get; set; }
         [Required(ErrorMessage = "You must enter this field")]

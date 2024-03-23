@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Ecommerce.ViewModel.User
 {
@@ -22,5 +23,6 @@ namespace Ecommerce.ViewModel.User
         [Required]
         public int? Gender { get; set; }
         public string? ErrorMessage { get; set; }
+
     }
 }

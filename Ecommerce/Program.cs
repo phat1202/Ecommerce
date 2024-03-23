@@ -45,14 +45,11 @@ builder.Services.AddSingleton(option =>
     )
 );
 
-
-//builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
-//{
-//    options.Conventions.AddPageRoute(
-//                     "/Home",
-//                     "/ChiTietSanPham.html"
-//                 );
-//});
+builder.Services.AddAuthorization(options =>
+{
+    //options.AddPolicy("Manager", policy => policy.RequireRole("Admin", "Staff"));
+    options.AddPolicy("Manager", policy => policy.RequireRole("Staff", "Admin"));
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

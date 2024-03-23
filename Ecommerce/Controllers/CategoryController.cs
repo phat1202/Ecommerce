@@ -2,12 +2,15 @@
 using Ecommerce.Models;
 using Ecommerce.Repositories;
 using Ecommerce.ViewModel.Category;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
 
 namespace Ecommerce.Controllers
 {
+    [Authorize(Policy = "Manager")]
+
     public class CategoryController : Controller
     {
         private readonly EcommerceDbContext _context;

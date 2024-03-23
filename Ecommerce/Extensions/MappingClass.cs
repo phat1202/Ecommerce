@@ -36,7 +36,8 @@ namespace Ecommerce.Extensions
             CreateMap<CartItemViewModel, CartItem>().ReverseMap();
             //Order
             CreateMap<OrderCrudModel, Order>().ReverseMap();
-            CreateMap<OrderViewModel, Order>().ReverseMap();       
+            CreateMap<OrderViewModel, Order>().ReverseMap();
+            CreateMap<OrderCrudModel, OrderViewModel>().ReverseMap();
             //OrderItem
             CreateMap<OrderItemCrudModel, OrderItem>().ReverseMap();
             CreateMap<OrderItemViewModel, OrderItem>().ReverseMap();

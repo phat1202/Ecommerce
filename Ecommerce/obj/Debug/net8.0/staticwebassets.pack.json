@@ -801,8 +801,24 @@
       "PackagePath": "staticwebassets\\scss\\style.scss"
     },
     {
-      "Id": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\template\\invoice.html",
-      "PackagePath": "staticwebassets\\template\\invoice.html"
+      "Id": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\template\\invoice\\invoice.css",
+      "PackagePath": "staticwebassets\\template\\invoice\\invoice.css"
+    },
+    {
+      "Id": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\template\\invoice\\invoice.html",
+      "PackagePath": "staticwebassets\\template\\invoice\\invoice.html"
+    },
+    {
+      "Id": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\template\\reset_password.html",
+      "PackagePath": "staticwebassets\\template\\reset_password.html"
+    },
+    {
+      "Id": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\template\\resetpassword\\resetpassword.css",
+      "PackagePath": "staticwebassets\\template\\resetpassword\\resetpassword.css"
+    },
+    {
+      "Id": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\wwwroot\\template\\resetpassword\\resetpassword.html",
+      "PackagePath": "staticwebassets\\template\\resetpassword\\resetpassword.html"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Ecommerce.Microsoft.AspNetCore.StaticWebAssets.props",

@@ -13,6 +13,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.Controllers
 {
+    [Authorize(Policy = "Manager")]
+
     public class ManagerController : Controller
     {
         private readonly ProductRepository _productRepo;

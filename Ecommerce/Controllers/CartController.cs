@@ -12,11 +12,14 @@ using Ecommerce.ViewModel.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Mysqlx.Crud;
 using PayPal.Api;
+using System;
 using System.Globalization;
 using System.Security.Claims;
 using System.Text;
@@ -42,9 +45,10 @@ namespace Ecommerce.Controllers
         private readonly OrderItemRepository _orderItemRepo;
         private readonly PaypalClient _paypalClient;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
         private IHttpContextAccessor _httpContextAccessor;
         IConfiguration _configuration;
-        public CartController(EcommerceDbContext context, IMapper mapper, PaypalClient paypalClient, IHttpContextAccessor httpContextAccessor, IConfiguration iconfiguration)
+        public CartController(EcommerceDbContext context, IMapper mapper, PaypalClient paypalClient, IHttpContextAccessor httpContextAccessor, IConfiguration iconfiguration, IWebHostEnvironment env)
         {
             _context = context;
             _mapper = mapper;
@@ -60,6 +64,7 @@ namespace Ecommerce.Controllers
             _paypalClient = paypalClient;
             _httpContextAccessor = httpContextAccessor;
             _configuration = iconfiguration;
+            _env = env;
         }
         public List<CartItemViewModel> Cart => HttpContext.Session.Get<List<CartItemViewModel>>(MyConst.CartKey)
                                                 ?? new List<CartItemViewModel>();
@@ -444,6 +449,9 @@ namespace Ecommerce.Controllers
                     //EmailSenderOrder(newOrder.OrderId);
                     //return RedirectToAction("CreatePaypalOrder", new { orderId = newOrder.OrderId });
                     TempData["RedirectedToSpecificAction"] = true;
+                    //Save Order If User not Authen
+                    var data = _mapper.Map<OrderViewModel>(newOrder);
+                    HttpContext.Session.Set(MyConst.OrderView, data);
                     return RedirectToAction("PaymentWithPaypal", new { orderId = newOrder.OrderId });
                 }
             }
@@ -452,7 +460,7 @@ namespace Ecommerce.Controllers
                 throw;
             }
         }
-
+        public OrderViewModel Order => new OrderViewModel();
         public ActionResult PaymentWithPaypal(string Cancel = null, string blogId = "", string PayerID = "", string guid = "", string? orderId = "")
         {
 
@@ -505,6 +513,12 @@ namespace Ecommerce.Controllers
                         return RedirectToAction("HistoryOrder", "Order");
                     }
                     //Change Order
+                    var data = Order;
+                    if(data != null)
+                    {
+                        data.IsPaid = true;
+                        HttpContext.Session.Set(MyConst.OrderView, data);
+                    }
                     order.IsPaid = true;
                     _context.SaveChanges();
                     EmailSenderOrder(order.OrderId);
@@ -611,28 +625,57 @@ namespace Ecommerce.Controllers
             {
                 foreach (var item in order.OrderItems)
                 {
-                    products.Append(item.product.ProductName + "+" );
+                    products.Append(item.product.ProductName);
+                    products.Append("+");
                 }
-                products.Length -= 3;
+                products.Length -= 2;
                 var status = Enum.GetName(typeof(EnumClass.OrderStatus), OrderStatus.Pending);
                 var PriceDisplay = string.Format(culture, "{0:c}", order.TotalPrice);
-                var pricePay = string.Format(culture, "{0:c}", order.TotalPrice + 6);
-                var subject = "Order Confirmation";
-                string body = $"Dear {order.FirstName},\n\n" +
-                                   $"Order #{order.OrderCode}\n" +
-                                   $" Your order is successfully created.\n" +
-                                   $"Thank you for your order!\n\n" +
-                                   $"Order Details:\n" +
-                                   $"Product: {products}\n" +
-                                   //$"Quantity: {quantity}\n" +
-                                   $"Total Price of Product: {PriceDisplay}\n" +
-                                   $"Shipping Fee $6 \n" +
-                                   $"Total Payment: {pricePay}\n" +
-                                   $"Order Status: {status}\n\n" +
-                                   $"We appreciate your business.\n\n" +
-                                   $"Sincerely,\n" +
-                                   $"Your Company Name";
-                emailSender.SendEmail(order.Email, subject, body);
+                var pricePay = string.Format(culture, "{0:c}", order.TotalPrice + 6);  //Add Ship fee $6
+                //Configure HTML
+                var webRoot = _env.WebRootPath;
+                var invoice = Path.Combine(webRoot, "template/invoice/invoice.html");
+                string emailBody = System.IO.File.ReadAllText(invoice);
+                StringBuilder itemsHtml = new StringBuilder();
+                foreach (var item in order.OrderItems)
+                {
+                    var totalPriceItem = string.Format(culture, "{0:c}", order.TotalPrice);
+                    string itemHtml = $@"
+                    <tr>
+                        <td align='left' width='75%' style='padding: 6px 12px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;'>
+                            {item.product.ProductName}
+                        </td>
+                        <td align='left' width='25%' style='padding: 6px 12px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;'>
+                            {totalPriceItem}
+                        </td>
+                    </tr>";
+
+                    itemsHtml.Append(itemHtml);
+                }
+                var code = order.OrderCode.Substring(3, order.OrderCode.Length - 7);
+                var subject = "Order Receipt ";
+                emailBody = emailBody.Replace("{{orderCode}}", code);
+                emailBody = emailBody.Replace("{{listProduct_HTML}}", itemsHtml.ToString());
+                emailBody = emailBody.Replace("{{total}}", pricePay);
+                emailSender.SendEmail(order.Email, subject, emailBody, true);
+                string ordDetail = this.Request.Scheme + "://" + this.Request.Host + $"/Order/DetailOrder?orderId={order.OrderId}";
+                emailBody = emailBody.Replace("{{guid}}", ordDetail);
+                //var subject = "Order Confirmation";
+                //string body = $"Dear {order.FirstName},\n\n" +
+                //                   $"Order #{order.OrderCode}\n" +
+                //                   $" Your order is successfully created.\n" +
+                //                   $"Thank you for your order!\n\n" +
+                //                   $"Order Details:\n" +
+                //                   $"Product: {products}\n" +
+                //                   //$"Quantity: {quantity}\n" +
+                //                   $"Total Price of Product: {PriceDisplay}\n" +
+                //                   $"Shipping Fee $6 \n" +
+                //                   $"Total Payment: {pricePay}\n" +
+                //                   $"Order Status: {status}\n\n" +
+                //                   $"We appreciate your business.\n\n" +
+                //                   $"Sincerely,\n" +
+                //                   $"Your Company Name";
+                //emailSender.SendEmail(order.Email, subject, body, false);
                 //Thông Báo Có người mua hàng
                 string baseURI = this.Request.Scheme + "://" + this.Request.Host + $"/Manager/OrderStatusManager?orderId={order.OrderId}";
                 var subject_ToAdmin = "Customer Have Just Made a Payment";
@@ -645,7 +688,7 @@ namespace Ecommerce.Controllers
                                    $"Total Payment: {pricePay}\n" +
                                    $"Order Status: {status}\n\n" +
                                    $"Click here to check the order: {baseURI}";
-                emailSender.SendEmail("dominicculen@gmail.com", subject_ToAdmin, body_ToAdmin);
+                emailSender.SendEmail("dominicculen@gmail.com", subject_ToAdmin, body_ToAdmin, false);
             }
         }
     }
