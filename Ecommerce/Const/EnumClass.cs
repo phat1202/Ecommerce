@@ -34,7 +34,14 @@ namespace Ecommerce.Const
             Delivered = 3,
             [Display(Name = "Canceled")]
             Canceled = 4,
-            
-       }
+
+        }
+        public enum PaymentMethod
+        {
+            [Display(Name = "Paypal")]
+            Paypal = 0,
+            [Display(Name = "Stripe")]
+            Stripe = 1
+        }
     }
 }

@@ -22,6 +22,8 @@ using System.Text;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using MySqlX.XDevAPI.Common;
+using System.Security.Policy;
 
 namespace Ecommerce.Controllers
 {
@@ -30,6 +32,7 @@ namespace Ecommerce.Controllers
         private readonly EcommerceDbContext _context;
         private readonly UserRepository _userRepo;
         private readonly CartRepository _cartRepo;
+        private readonly OrderRepository _orderRepo;
         private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper;
         public UserController(EcommerceDbContext context, IMapper mapper, IWebHostEnvironment env)
@@ -38,6 +41,7 @@ namespace Ecommerce.Controllers
             _mapper = mapper;
             _userRepo = new UserRepository(_context, _mapper);
             _cartRepo = new CartRepository(_context, _mapper);
+            _orderRepo = new OrderRepository(_context, _mapper);
             _env = env;
         }
         public IActionResult IndexAsync()
@@ -130,8 +134,8 @@ namespace Ecommerce.Controllers
         // Confirm Email
         public async Task<IActionResult> ActivateAsync(string token)
         {
-            var user = _userRepo.FirstOrDefault(u => u.ActivateToken.ToString().Contains(token));
-            if(user == null || user.AccountActivated == true)
+            var user = _userRepo.FirstOrDefault(u => u.ActivateToken.ToString() == token);
+            if (user == null || user.AccountActivated == true)
             {
                 return NotFound("InValid Url");
             }
@@ -163,13 +167,23 @@ namespace Ecommerce.Controllers
                     model.ErrorMessage = "Login Failed";
                     return View(model);
                 }
-                if(result.AccountActivated == false)
+                if (result.AccountActivated == false)
                 {
                     model.ErrorMessage = "Your Account have not been activated.";
                     return View(model);
                 }
                 var returnUrl = HttpContext.Session.GetString("ReturnUrl");
                 HttpContext.Session.Remove("ReturnUrl");
+                //Check order
+                var orders = _orderRepo.GetItem().Where(x => x.UserId == null && x.Email == result.Email).ToList();
+                if (orders.Count() > 0)
+                {
+                    foreach (var i in orders)
+                    {
+                        i.UserId = result.UserId;
+                    }
+                    await _orderRepo.CommitAsync();
+                }
                 if (string.IsNullOrEmpty(returnUrl))
                 {
                     return Redirect("/");
@@ -320,7 +334,7 @@ namespace Ecommerce.Controllers
         public async Task<IActionResult> UpdatePassword(ResetPasswordModel model)
         {
             try
-            {            
+            {
                 //Find user
                 var user = _userRepo.FirstOrDefault(x => x.UserId == model.UserId);
                 user.Password = model.NewPassword.Hash();

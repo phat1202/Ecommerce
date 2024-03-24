@@ -20,8 +20,12 @@
                         {
                             <strong>This order have not been paid.  <a asp-action="PaymentWithPaypal" asp-controller="Cart" asp-route-orderId="@Model.OrderId">Complete Payment</a></strong>
                         }
-                    </div>
 
+                    </div>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <strong>You should save this order code.</strong>
+                    }
                     <div class="payment-info">
                         <div class="row">
                             <div class="col-sm-6">

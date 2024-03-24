@@ -289,6 +289,7 @@ namespace Ecommerce.Controllers
         }
         public IActionResult CheckOut()
         {
+            HttpContext.Session.SetString("ReturnUrl", Request.Headers["Referer"].ToString());
             if (TempData["RedirectedToSpecificAction"] != null && (bool)TempData["RedirectedToSpecificAction"])
             {
                 // Clear the flag
@@ -305,6 +306,10 @@ namespace Ecommerce.Controllers
                     .Include(p => p.product)
                     .Include(c => c.cart)
                     .ToList();
+                if(ItemOrders.Count() < 1)
+                {
+                    return RedirectToAction("Index", "Cart");
+                }
                 var userView = _mapper.Map<UserViewModel>(user);
                 var cartView = _mapper.Map<CartViewModel>(cartUser);
                 var cartItemView = _mapper.Map<List<CartItemViewModel>>(ItemOrders);
@@ -320,16 +325,28 @@ namespace Ecommerce.Controllers
                 myCart.CartItems = myItems;
                 var userView = new UserViewModel();
                 var ItemOrders = Cart.Where(i => i.ItemSelected == true).ToList();
+                if (ItemOrders.Count() < 1)
+                {
+                    return RedirectToAction("Index", "Cart");
+                }
+
                 userView.Cart = myCart;
                 ViewBag.ClientId = _paypalClient.ClientId;
                 return View(userView);
             }
         }
         [HttpPost]
-        public async Task<IActionResult> CheckOut(UserViewModel model)
+        public async Task<IActionResult> CheckOut(UserViewModel model, string? payment)
         {
             try
             {
+                string currentUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                var errorMessage = new ErrorViewModel();
+                if (payment != "paypal" && payment != "stripe")
+                {
+                    ViewData["Error"] = "Something went wrong, please try again.";
+                    return Redirect(currentUrl);
+                }
                 decimal SubtotalOrder = 0;
                 if (User.Identity.IsAuthenticated)
                 {
@@ -391,11 +408,13 @@ namespace Ecommerce.Controllers
                         //return RedirectToAction("Index", "Home");
                     }
                     TempData["RedirectedToSpecificAction"] = true;
+                    //if(payment == "")
                     return RedirectToAction("PaymentWithPaypal", new { orderId = newOrder.OrderId });
                 }
                 else
                 {
                     var myCart = Cart;
+                    var IdForCode = Extensions.Extensions.GenerateRandomString(4);
                     foreach (var item in myCart)
                     {
                         var price = item.Quantity * item.Product.Price;
@@ -404,7 +423,7 @@ namespace Ecommerce.Controllers
                     var newOrder = new OrderCrudModel
                     {
                         OrderTitle = myCart.FirstOrDefault().Product.ProductName,
-                        OrderCode = "ORD" + DateTime.Now.Ticks + "NLGY",
+                        OrderCode = "ORD" + DateTime.Now.Ticks + IdForCode,
                         CreatedAt = DateTime.Now,
                         OrderStatus = 0,
                         FirstName = model.FirstName,
@@ -450,8 +469,8 @@ namespace Ecommerce.Controllers
                     //return RedirectToAction("CreatePaypalOrder", new { orderId = newOrder.OrderId });
                     TempData["RedirectedToSpecificAction"] = true;
                     //Save Order If User not Authen
-                    var data = _mapper.Map<OrderViewModel>(newOrder);
-                    HttpContext.Session.Set(MyConst.OrderView, data);
+                    var myORder = _mapper.Map<OrderViewModel>(newOrder);
+                    HttpContext.Session.Set<OrderViewModel>(MyConst.OrderView, myORder);
                     return RedirectToAction("PaymentWithPaypal", new { orderId = newOrder.OrderId });
                 }
             }
@@ -460,7 +479,8 @@ namespace Ecommerce.Controllers
                 throw;
             }
         }
-        public OrderViewModel Order => new OrderViewModel();
+        public OrderViewModel Order => HttpContext.Session.Get<OrderViewModel>(MyConst.OrderView)
+                                                ?? new OrderViewModel();
         public ActionResult PaymentWithPaypal(string Cancel = null, string blogId = "", string PayerID = "", string guid = "", string? orderId = "")
         {
 
@@ -513,18 +533,18 @@ namespace Ecommerce.Controllers
                         return RedirectToAction("HistoryOrder", "Order");
                     }
                     //Change Order
-                    var data = Order;
-                    if(data != null)
-                    {
-                        data.IsPaid = true;
-                        HttpContext.Session.Set(MyConst.OrderView, data);
-                    }
+                    //var data = Order;
+                    //if(data != null)
+                    //{
+                    //    data.IsPaid = true;
+                    //    HttpContext.Session.Set(MyConst.OrderView, data);
+                    //}
                     order.IsPaid = true;
                     _context.SaveChanges();
                     EmailSenderOrder(order.OrderId);
                     TempData.Clear();
                     var blogIds = executedPayment.transactions[0].item_list.items[0].sku;
-                    return RedirectToAction("HistoryOrder", "Order");
+                    return RedirectToAction("DetailOrder", "Order", new {orderId = order.OrderId});
                 }
             }
             catch (Exception ex)
@@ -554,6 +574,7 @@ namespace Ecommerce.Controllers
             {
                 items = new List<Item>(),
             };
+
             foreach (var i in order.OrderItems)
             {
                 itemList.items.Add(new Item()

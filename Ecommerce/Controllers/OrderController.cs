@@ -76,9 +76,8 @@ namespace Ecommerce.Controllers
             }
             else
             {
-                var data = HttpContext.Session.Get<OrderViewModel>(MyConst.OrderView)
-                                ?? new OrderViewModel();
-                result.Add(data);
+                //var data = HttpContext.Session.Get<OrderViewModel>(MyConst.OrderView);
+                //result.Add(data);
                 return View(result);
             }
         }

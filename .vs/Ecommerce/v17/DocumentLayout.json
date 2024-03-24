@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\views\\home\\shopviewing.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\views\\home\\shopviewing.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\extensions\\extensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\extensions\\extensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\extensions\\statsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\extensions\\statsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|c:\\users\\trgta\\onedrive\\desktop\\c#\\pp\\ecommerce\\ecommerce\\views\\order\\detailorder.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AADE8A1F-DC67-404A-9C45-5C4928882710}|Ecommerce\\Ecommerce.csproj|solutionrelative:ecommerce\\views\\order\\detailorder.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 118,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,54 +38,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "StatsService.cs",
-              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Extensions\\StatsService.cs",
-              "RelativeDocumentMoniker": "Ecommerce\\Extensions\\StatsService.cs",
-              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Extensions\\StatsService.cs",
-              "RelativeToolTip": "Ecommerce\\Extensions\\StatsService.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAABgAAAAbAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-23T10:08:49.239Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "Ecommerce\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "Ecommerce\\Controllers\\HomeController.cs",
-              "ViewState": "AQIAAB8AAAAAAAAAAAAQwCoAAAAAAAAA",
+              "Title": "Extensions.cs",
+              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Extensions\\Extensions.cs",
+              "RelativeDocumentMoniker": "Ecommerce\\Extensions\\Extensions.cs",
+              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Extensions\\Extensions.cs",
+              "RelativeToolTip": "Ecommerce\\Extensions\\Extensions.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAABcAAAAyAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-23T10:05:36.576Z",
+              "WhenOpened": "2024-03-24T14:05:15.413Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ShopViewing.cshtml",
-              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Views\\Home\\ShopViewing.cshtml",
-              "RelativeDocumentMoniker": "Ecommerce\\Views\\Home\\ShopViewing.cshtml",
-              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Views\\Home\\ShopViewing.cshtml",
-              "RelativeToolTip": "Ecommerce\\Views\\Home\\ShopViewing.cshtml",
-              "ViewState": "AQIAAIMAAAAAAAAAAAAAwKEAAAAsAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-03-23T10:03:30.68Z",
+              "Title": "CartController.cs",
+              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Controllers\\CartController.cs",
+              "RelativeDocumentMoniker": "Ecommerce\\Controllers\\CartController.cs",
+              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Controllers\\CartController.cs",
+              "RelativeToolTip": "Ecommerce\\Controllers\\CartController.cs",
+              "ViewState": "AQIAAKYBAAAAAAAAAAAAAKkBAABKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-24T13:52:57.549Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Program.cs",
-              "RelativeDocumentMoniker": "Ecommerce\\Program.cs",
-              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Program.cs",
-              "RelativeToolTip": "Ecommerce\\Program.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAABkAAAADAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-23T09:38:05.759Z",
+              "DocumentIndex": 2,
+              "Title": "DetailOrder.cshtml",
+              "DocumentMoniker": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Views\\Order\\DetailOrder.cshtml",
+              "RelativeDocumentMoniker": "Ecommerce\\Views\\Order\\DetailOrder.cshtml",
+              "ToolTip": "C:\\Users\\trgta\\OneDrive\\Desktop\\C#\\PP\\Ecommerce\\Ecommerce\\Views\\Order\\DetailOrder.cshtml",
+              "RelativeToolTip": "Ecommerce\\Views\\Order\\DetailOrder.cshtml",
+              "ViewState": "AQIAAA8AAAAAAAAAAAAAABsAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-03-24T10:49:43.481Z",
               "EditorCaption": ""
             }
           ]

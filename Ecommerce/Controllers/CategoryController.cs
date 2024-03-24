@@ -9,7 +9,7 @@ using System.Net.WebSockets;
 
 namespace Ecommerce.Controllers
 {
-    [Authorize(Policy = "Manager")]
+    [Authorize(Roles = "Admin")]
 
     public class CategoryController : Controller
     {

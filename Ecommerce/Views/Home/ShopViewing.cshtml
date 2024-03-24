@@ -4,6 +4,7 @@
 @{
     Layout = "~/Views/Shared/_LayoutCustom.cshtml";
     var categories = _statsService.GetAllCategories();
+    int number = 0;
 
 }
 <script>
@@ -12,6 +13,17 @@
         var productId = $(this).data('product-id');
         addItemToCart(productId);
     });
+    // $(document).ready(function () {
+    //     $(".custom-control-input").on("click", function (event) {
+    //         event.preventDefault();
+
+    //         $("#filterCategory").submit();
+
+    //         //w indow.location.href = "/Cart/PaymentWithPaypal";
+    //     });
+    // });
+
+
 
     function addItemToCart(productId) {
         $.ajax({
@@ -72,8 +84,8 @@
             <div class="col-lg-3 col-md-12">
                 <!-- Price Start -->
                 <div class="border-bottom mb-4 pb-4">
-                    <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
-                    <form>
+                    @* <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
+                    <form id="filterPrice" method="get" action="@Url.Action("ShopViewing", "Home")">
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input" checked id="price-all">
                             <label class="custom-control-label" for="price-all">All Price</label>
@@ -81,7 +93,7 @@
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input" id="price-1">
-                            <label class="custom-control-label" for="price-1">$0 - $100</label>
+                            <label class="custom-control-label" name="price" value="0-100" for="price-1">$0 - $100</label>
                             <span class="badge border font-weight-normal">150</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
@@ -104,28 +116,34 @@
                             <label class="custom-control-label" for="price-5">$400 - $500</label>
                             <span class="badge border font-weight-normal">168</span>
                         </div>
-                    </form>
+                    </form> *@
                 </div>
                 <!-- Price End -->
                 <!-- Color Start -->
                 <div class="border-bottom mb-4 pb-4">
-                    <h5 class="font-weight-semi-bold mb-4">Filter by color</h5>
-                    <form method="get" action="@Url.Action("ShopViewing", "Home")">
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="color-all">
-                            <label class="custom-control-label" for="price-all">All Color</label>
+                    <h5 class="font-weight-semi-bold mb-4">Filter by Category</h5>
+                    <form  asp-action="ShopViewing" asp-controller="Home")">
+@*                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" value="@null" @(string.IsNullOrEmpty(ok) ? "checked" : "") class="custom-control-input" id="color-all">
+                            <label class="custom-control-label" for="color-all">All Color</label>
                             <span class="badge border font-weight-normal">1000</span>
-                        </div>
-
+                            </div> *@
                         @foreach (var category in categories)
                         {
+                            var i = ++number;
+                            bool okcheck = false;
+                            if (ViewBag.SelectCategory != null && ViewBag.SelectCategory.Contains(category.Name))
+                            {
+                                okcheck = true;
+                            }
                             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" name="name" id="color-1">
-                                <label class="custom-control-label" for="color-1">@category.Name</label>
+@*                                 <input name="category" value="@category.Name" class="custom-control-input" type="checkbox" id="color-@i" @(okcheck ? "checked" : "")> *@
+                                <input name="selectedCategories" value="@category.Name" class="custom-control-input category-checkbox" type="checkbox" id="color-@i" @(okcheck ? "checked" : "")>
+                                <label class="custom-control-label" for="color-@i">@category.Name</label>
                                 <span class="badge border font-weight-normal">@_statsService.GetCount(@category.CategoryId)</span>
                             </div>
                         }
-
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
                       @*   <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input" id="color-2">
                             <label class="custom-control-label" for="color-2">White</label>
@@ -151,20 +169,6 @@
                 <!-- Color End -->
                 <!-- Size Start -->
                 <div class="mb-5">
-                    <form asp-action="ShopViewing" asp-controller="YourControllerName" method="get">
-                        <label>
-                            <input type="checkbox" name="filterActive" /> Filter Active
-                        </label>
-                        <label>
-                            Select Category:
-                            <select name="selectedCategories" multiple>
-
-                                    <option>category.Name</option>
-
-                            </select>
-                        </label>
-                        <button type="submit">Apply Filter</button>
-                    </form>
                     @* <h5 class="font-weight-semi-bold mb-4">Filter by size</h5>
                     <form>
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
@@ -207,9 +211,9 @@
                 <div class="row pb-3">
                     <div class="col-12 pb-1">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <form action="">
+                            <form   >
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search by name">
+                                    <input type="text" name="search" class="form-control" placeholder="Search by name">
                                     <div class="input-group-append">
                                         <span class="input-group-text bg-transparent text-primary">
                                             <i class="fa fa-search"></i>
@@ -307,7 +311,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 pb-1">
+@*                     <div class="col-12 pb-1">
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center mb-3">
                                 <li class="page-item disabled">
@@ -327,7 +331,7 @@
                                 </li>
                             </ul>
                         </nav>
-                    </div>
+                    </div> *@
                 </div>
             </div>
             <!-- Shop Product End -->

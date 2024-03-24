@@ -15,11 +15,24 @@ namespace Ecommerce.Extensions
         {
             session.SetString(key, JsonSerializer.Serialize(value));
         }
-
         public static T? Get<T>(this ISession session, string key)
         {
             var value = session.GetString(key);
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
+        }
+        //Random for non-login usesr
+        public static string GenerateRandomString(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+            char[] randomArray = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                randomArray[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new string(randomArray);
         }
     }
 }

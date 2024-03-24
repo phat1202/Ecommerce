@@ -7,6 +7,10 @@
 <div class="container-fluid pt-5">
     <div class="row px-xl-5">
         <div class="col-lg-8">
+            @if(ViewBag.Error != null)
+            {
+                <p class="text-danger">@ViewBag.Error</p>
+            }
             <form id="orderForm" asp-action="CheckOut" asp-controller="Cart">
                 <div class="mb-4">
                     <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
@@ -48,12 +52,12 @@
                             <label>ZIP Code</label>
                             <input class="form-control" type="text" placeholder="123" required>
                         </div>
-                        <div class="col-md-12 form-group">
+@*                         <div class="col-md-12 form-group">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="newaccount">
                                 <label class="custom-control-label" for="newaccount">Create an account</label>
                             </div>
-                        </div>
+                        </div> *@
                         @*                         <div class="col-md-12 form-group">
                         <div class="custom-control custom-checkbox">
                         <input asp-for="DeliveryDifferentAddress" type="checkbox" class="custom-control-input" id="shipto">
@@ -162,28 +166,28 @@
                 <div class="card-header bg-secondary border-0">
                     <h4 class="font-weight-semi-bold m-0">Payment</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body" >
                     <div class="form-group">
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="paypal" checked>
+                            <input value="paypal" type="radio" class="custom-control-input" name="payment" id="paypal">
                             <label class="custom-control-label" for="paypal">Paypal</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-radio">
+                            <input value="stripe" type="radio" class="custom-control-input" name="payment" id="stripe">
+                            <label class="custom-control-label" for="stripe">Stripe</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="card-footer border-secondary bg-transparent">
                     <a id="placeOrderBtn" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">
+                        Place Order
                     </a>
                 </div>
-             
-
-
-
-
             </div>
-
         </div>
-        <div id="paypal-button-container" style="max-width:1000px;">av</div>
     </div>
 </div>
 @section checkout{
@@ -192,11 +196,34 @@
 
         $(document).ready(function () {
             $("#placeOrderBtn").on("click", function (event) {
-                event.preventDefault(); 
+                event.preventDefault();
+                var inputsAreValid = true;
+
+                // Iterate over input fields within the form with id "orderForm"
+                $("#orderForm input[type='text']").each(function () {
+                    if ($(this).val().trim() === '') {
+                        inputsAreValid = false;
+                        return false;
+                    }
+                });
+                if (!$("input[name='payment']:checked").val()) {
+                    inputsAreValid = false;
+                }
+                if (!inputsAreValid) {
+                    alert('Please select payment method.');
+                    return; // Exit the function early
+                }
+                // Get the value of the checkbox
+                var checkboxValue = $("input[name='payment']:checked").val();
+
+                // Add the checkbox value to the form data
+                $("#orderForm").append('<input type="hidden" name="payment" value="' + checkboxValue + '">');
+
                 $("#orderForm").submit(); 
                 //window.location.href = "/Cart/PaymentWithPaypal";
             });
         });
+
         // $(document).ready(function () {
         //     function toggleRequired() {
         //         var checkbox = $("#shipto");
